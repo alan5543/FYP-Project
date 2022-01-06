@@ -1,0 +1,98 @@
+{% extends "base.html" %} 
+{% block title %}Discover More{% endblock %}
+
+{% block content %}
+
+
+<!-- <div class="jumbotron bg-info text-white jumbotron-fluid slogon-container">
+    <div class="container">
+        <h1 class="display-4">Your Corner</h1>
+        <p class="lead">Personalize your news habit here</p>
+    </div>
+</div>
+
+<ul class="list-group list-grouop-flush" id="records">
+    {% for record in user.records %}
+    <li class="list-group-item">
+        <h1 class="record-title">{{ record.title }}</h1>
+        <p class="record-data">{{record.data}}</p>
+        <div class="corner-button-container btn-toolbar">
+            <button type="button" class="btn btn-primary corner-button">
+                VIEW
+            </button>
+            <button type="button" class="btn btn-secondary corner-button" onclick="deleteNote({{record.id}})">
+                DELETE
+            </button>
+
+        </div>
+    </li>
+    {% endfor %}
+</ul> -->
+
+
+<link href="../static/css/yourcorner.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
+<div class="jumbotron bg-dark text-white jumbotron-fluid slogon-container">
+    <div class="container">
+        <h1 class="display-4">Your History</h1>
+        <p class="lead">Find the input record here</p>
+    </div>
+</div>
+
+<div class="history-field">
+  <table id="data" class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>News Title</th>
+          <th>News Text</th>
+          <th>Post Date</th>
+          <th>User Email</th>
+          <th>Delete</th>
+          <th>Analysis</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in user.records %}
+          <tr>
+            <td>{{ record.id }}</td>
+            <td>{{ record.title}}</td>
+            <td>{{ record.data[:100] }}...</td>
+            <td>{{ record.date }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+            <button type="button" class="btn btn-secondary corner-button" onclick="deleteNote({{record.id}})">
+            DELETE
+            </button>
+            </td>
+            <td>
+            <button type="button" class="btn btn-dark corner-button" onclick="readNote({{record.id}})">
+            REREAD
+            </button></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+</div>
+
+
+{% endblock %}
+
+
+<!-- Table Property Editable, Searchable, Sortable-->
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable({
+        columns: [
+          null,
+          null,
+          {searchable: false},
+          null,
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false}],
+      });
+    });
+  </script>
+{% endblock %}

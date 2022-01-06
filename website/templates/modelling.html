@@ -1,0 +1,371 @@
+{% extends "base.html" %} 
+{% block title %}Modelling{% endblock %}
+
+{% block content %}
+
+<link href="../static/css/summaryboard.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+
+        <div class="container">
+          <div class="carousel-caption text-start">
+            <h1>Your Summary Is Ready...</h1>
+            <p>Processing by NLP and Machine Learning with Abstractive and Extractive Approach</p>
+            <!-- Button trigger modal-->
+            <p><a class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalRelatedContent">View Original News</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+
+        <div class="container">
+          <div class="carousel-caption">
+            <h1>Another example headline.</h1>
+            <p>Some representative placeholder content for the second slide of the carousel.</p>
+            <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>-->
+
+  <div class="row featurette core-sent-container">
+    <div class="card core-sent-display">
+    <div class="card-header featurette-heading">
+        One Sentence to summarize All
+    </div>
+    <div class="card-body">
+        <blockquote class="blockquote mb-0">
+        <p>A well-known quote, contained in a blockquote element.</p>
+        <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+        </blockquote>
+    </div>
+    </div>
+    <div class="col-md-5 order-md-1">
+      <img src={{newImage}} alt="Girl in a jacket" width="100%" height="100%">
+
+    </div>
+  </div>
+
+<hr class="featurette-divider">
+
+<div class="p-5 bg-white rounded shadow mb-5">
+  <!-- Rounded tabs -->
+  <ul id="myTab" role="tablist" class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav">
+    <li class="nav-item flex-sm-fill">
+      <a id="abstract-tab" data-toggle="tab" href="#abstract" role="tab" aria-controls="abstract" aria-selected="true" class="nav-link border-0 text-uppercase font-weight-bold active">Home</a>
+    </li>
+    <li class="nav-item flex-sm-fill">
+      <a id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" class="nav-link border-0 text-uppercase font-weight-bold">Profile</a>
+    </li>
+    <li class="nav-item flex-sm-fill">
+      <a id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false" class="nav-link border-0 text-uppercase font-weight-bold">Contact</a>
+    </li>
+  </ul>
+  <div id="myTabContent" class="tab-content">
+    <div id="abstract" role="tabpanel" aria-labelledby="abstract-tab" class="tab-pane fade px-4 py-5 show active">
+      <p class="text-muted">A</p>
+    </div>
+    <div id="profile" role="tabpanel" aria-labelledby="profile-tab" class="tab-pane fade px-4 py-5 show active">
+      <p class="text-muted">B</p>
+    </div>
+    <div id="contact" role="tabpanel" aria-labelledby="contact-tab" class="tab-pane fade px-4 py-5">
+      <p class="text-muted">C</p>
+    </div>
+  </div>
+  <!-- End rounded tabs -->
+</div>
+
+<div class="summary-container">
+  <div class="title-container">
+      <h3 class="featurette-heading">Quick Summary on Your News Article</h3>
+  </div>
+  <div class="p-5 bg-white rounded shadow mb-5">
+    <!-- Rounded tabs -->
+    <ul id="myTab" role="tablist" class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav">
+      <li class="nav-item flex-sm-fill">
+        <a id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" class="nav-link border-0 text-uppercase font-weight-bold active">Extractive Summary</a>
+      </li>
+      <li class="nav-item flex-sm-fill">
+        <a id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" class="nav-link border-0 text-uppercase font-weight-bold">Abstractive Summary</a>
+      </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+      <div id="home" role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade px-4 py-5 show active">
+        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p class="text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        
+        <button type="button" class="btn btn-secondary summary-compare-button btn-lg" data-toggle="modal" data-target="#modalRelatedContent2">Compare with Orginal</button>
+      </div>
+
+      <div id="profile" role="tabpanel" aria-labelledby="profile-tab" class="tab-pane fade px-4 py-5">
+        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p class="text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+          irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        
+        <button type="button" class="btn btn-secondary summary-compare-button btn-lg" data-toggle="modal" data-target="#modalRelatedContent3">Compare with Original</button>
+        </div>
+    </div>
+    <!-- End rounded tabs -->
+  </div>
+</div>
+
+<div class="row featurette">
+    <div class="col-md-7 order-md-2">
+      <h2 class="featurette-heading">Oh yeah, it’s that good. <span class="text-muted">See for yourself.</span></h2>
+      <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
+    </div>
+    <div class="col-md-5 order-md-1">
+      <!--<svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>-->
+      <canvas id="myChart" width="300" height="200"></canvas>
+    </div>
+</div>
+
+<hr class="featurette-divider">
+
+<div class="row featurette">
+    <div class="col-md-7 left-text">
+      <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
+      <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
+    </div>
+    <div class="col-md-5 right-chart">
+      <!--wordcloud-container word-cloud word-cloud-text<svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>-->
+        <canvas id="myChart2" width="300" height="200"></canvas>
+    </div>
+</div>
+
+<hr class="featurette-divider">
+
+<div class="row featurette wordcloud-container"> 
+    <div class="col-md-8 left-text ">
+        <img src="../static/images/wordcloud.png" alt="Girl in a jacket" width="100%" height="100%">
+    </div>
+    <div class="col-md-4 right-chart word-cloud-text">
+      <h2 class="featurette-heading">Oh yeah, it’s that good. <span class="text-muted">See for yourself.</span></h2>
+      <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
+    </div>
+</div>
+
+<hr class="featurette-divider">
+  
+  <!--Modal: modalRelatedContent-->
+  <div class="modal fade right" id="modalRelatedContent" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
+      <!--Content-->
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <p class="heading">Your News Article</p>
+  
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="white-text">&times;</span>
+          </button>
+        </div>
+  
+        <!--Body-->
+        <div class="modal-body">
+  
+          <div class="row">
+            <div class="col-5">
+              <img src={{newImage}}
+                class="img-fluid" alt="">
+            </div>
+  
+            <div class="col-7">
+              <h3><strong>Newspaper Title</strong></h3>
+              <h2>NBA World Reacts To Significant Ben Simmons News</h2>
+              <p>With the NBA’s 2021-22 regular season roughly a week away, we could be reaching a resolution – at least, a temporary one – with the Ben Simmons situation.
+
+
+                Simmons has made it clear that he wants out of Philadelphia. The 76ers’ former No. 1 overall NBA Draft pick is no longer happy with the Eastern Conference franchise. He’s been pushing for a trade all offseason.
+                
+                However, the 76ers don’t really want to trade him. And so far, it doesn’t sound like Philadelphia has gotten any offers that are good enough to consider.
+                
+                So, while Simmons had reportedly committed to not showing up in Philadelphia, he might be reversing course.
+                
+                
+                NBA insiders Adrian Wojnarowski and Shams Charania had similar updates on Monday morning.</p>
+              <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/.Content-->
+    </div>
+  </div>
+  <!--Modal: modalRelatedContent-->
+
+  <div class="modal fade right" id="modalRelatedContent2" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading">Extractive News Comparsion</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body">
+
+        <div class="row compare-container">
+          <div class="col-7 compare-element1">
+            <h3><strong>Orginal Side</strong></h3>
+            <h2>NBA World Reacts To Significant Ben Simmons News</h2>
+            <p>This defines the ability for a flex item to grow if necessary. It accepts a unitless value that serves as a proportion. It dictates what amount of the available space inside the flex container the item should take up.
+
+                If all items have flex-grow set to 1, the remaining space in the container will be distributed equally to all children. If one of the children has a value of 2, the remaining space would take up twice as much space as the others (or it will try to, at least).</p>
+          </div>
+
+          <div class="col-7 compare-element2">
+            <h3><strong>Extractive Side</strong></h3>
+            <h2>NBA World Reacts To Significant Ben Simmons News</h2>
+            <p>With the NBA’s 2021-22 regular season roughly a week away</p>
+            <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+
+<div class="modal fade right" id="modalRelatedContent3" tabindex="-1" role="dialog"
+aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-xl modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
+  <!--Content-->
+  <div class="modal-content">
+    <!--Header-->
+    <div class="modal-header">
+      <p class="heading">Abstractive News Comparsion</p>
+
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+
+    <!--Body-->
+    <div class="modal-body">
+
+        <div class="row compare-container">
+          <div class="col-7 compare-element1">
+            <h3><strong>Orginal Side</strong></h3>
+            <h2>NBA World Reacts To Significant Ben Simmons News</h2>
+            <p>This defines the ability for a flex item to grow if necessary. It accepts a unitless value that serves as a proportion. It dictates what amount of the available space inside the flex container the item should take up.
+
+                If all items have flex-grow set to 1, the remaining space in the container will be distributed equally to all children. If one of the children has a value of 2, the remaining space would take up twice as much space as the others (or it will try to, at least).</p>
+          </div>
+
+          <div class="col-7 compare-element2">
+            <h3><strong>Abstractive Side</strong></h3>
+            <h2>NBA World Reacts To Significant Ben Simmons News</h2>
+            <p>With the NBA’s 2021-22 regular season roughly a week away</p>
+            <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!--/.Content-->
+</div>
+</div>
+
+<!--<div class="chart-container" style="position: relative; height:30vw; width:50vw; display: flex;">
+    <canvas id="myChart" width="300" height="200"></canvas>
+    <canvas id="myChart2" width="300" height="200"></canvas>
+</div>-->
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    const data = {
+    type: 'bar',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+};
+    var myChart = new Chart(ctx, data);
+
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    const data2 = {
+        labels: [
+            'Red',
+            'Blue',
+            'Yellow'
+        ],
+        datasets: [{
+            label: 'My First Dataset',
+            data: [300, 50, 100],
+            backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+        };
+
+    const config2 = {
+        type: 'doughnut',
+        data: data2,
+        };
+
+    var myChart2 = new Chart(ctx2, config2);
+</script>
+
+
+{% endblock %}

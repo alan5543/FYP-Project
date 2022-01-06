@@ -1,0 +1,132 @@
+body {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    color: #5a5a5a;
+  }
+
+  .carousel {
+    margin-bottom: 4rem;
+  }
+  /* Since positioning the image, we need to help out the caption */
+  .carousel-caption {
+    bottom: 3rem;
+    z-index: 10;
+  }
+  
+  /* Declare heights because of positioning of img element */
+  .carousel-item {
+    height: 32rem;
+  }
+  .carousel-item > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    height: 32rem;
+  }
+
+  .core-sent-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      padding: 0 0 2rem 0;
+  }
+
+  .core-sent-display{
+      width: 50%;
+  }
+  
+  .featurette-divider {
+    margin: 1rem 0; /* Space out the Bootstrap <hr> more */
+  }
+  
+  /* Thin out the marketing headings */
+  .featurette-heading {
+    font-weight: 500;
+    line-height: 1;
+    font-size: 2vw;
+    /* rtl:remove */
+    letter-spacing: -.05rem;
+  }
+
+  .summary-container{
+      width: 100%;
+      height: 100%;
+  }
+
+  .title-container{
+      margin-bottom: 1%;
+      text-align: center;
+      justify-content: center;
+      display: flex;
+      flex-direction: row;
+  }
+
+  /* for rounded tab page*/
+  @media (min-width: 576px) {
+    .rounded-nav {
+      border-radius: 50rem !important;
+    }
+  }
+  
+  @media (min-width: 576px) {
+    .rounded-nav .nav-link {
+      border-radius: 50rem !important;
+    }
+  }
+
+  .summary-compare-button{
+      margin-top: 5%;
+  }
+
+  .order-md-2{
+      order: 2!important;
+      padding: 5rem 5rem 1rem 5rem;
+  }
+
+  .order-md-1{
+      order: 1!important;
+      padding: 0 0 0 3rem;
+  }
+
+  .left-text{
+    padding: 5rem 5rem 1rem 5rem;
+  }
+
+  .right-chart{
+    padding: 0 0 0 3rem;
+  }
+
+  .wordcloud-container{
+      display: flex;
+      flex-direction: row;
+  }
+  
+  .word-cloud{
+      width: 60%;
+      padding: 0 0 0 2rem;
+  }
+
+  .word-cloud-text{
+      /*width: 40%;*/
+      padding: 8rem 5rem 1rem 5rem;
+  }
+
+  .compare-container{
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+  }
+
+  .compare-element1{
+      width: 50%;
+      border-style: outset;
+      padding: 1rem 1rem 1rem 1rem;
+  }
+
+  .compare-element2{
+      width: 50%;
+      border-style: outset;
+      padding: 1rem 1rem 1rem 1rem;
+  }
+  

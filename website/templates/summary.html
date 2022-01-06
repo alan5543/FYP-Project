@@ -1,0 +1,558 @@
+{% extends "base.html" %} 
+{% block title %}Summary{% endblock %}
+
+{% block content %}
+
+<link href="../static/css/summaryboard.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<!--Introduction Carousel-->
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+
+        <div class="container">
+          <div class="carousel-caption text-start">
+            <h1>Your Summary Is Ready...</h1>
+            <p>Processing by NLP and Machine Learning with Abstractive and Extractive Approach</p>
+            <p>I have found the key word, main concept, summary idea on your passage</p>
+            <!-- Button trigger modal-->
+            <p><a class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalRelatedContent">View Original News</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+
+        <div class="container">
+          <div class="carousel-caption">
+            <h1>Another example headline.</h1>
+            <p>Some representative placeholder content for the second slide of the carousel.</p>
+            <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>-->
+
+<!--Modal for reading the original article-->
+  <div class="modal fade right" id="modalRelatedContent" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
+      <!--Content-->
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header">
+          <p class="heading">Your News Article</p>
+  
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="white-text">&times;</span>
+          </button>
+        </div>
+  
+        <!--Body-->
+        <div class="modal-body">
+  
+          <div class="row">
+            <div class="col-5">
+              <img src={{newImage}}
+                class="img-fluid" alt="">
+            </div>
+  
+            <div class="col-7">
+              <h3><strong>Newspaper Title</strong></h3>
+              <h2>{{ title }}</h2>
+              <p>{{ doc }}</p>
+              <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/.Content-->
+    </div>
+  </div>
+<!--Modal: modalRelatedContent-->
+
+
+<!--Core Sentence Corner-->
+  <div class="row featurette core-sent-container">
+    <div class="card core-sent-display">
+    <div class="card-header featurette-heading">
+        One Sentence to summarize All
+    </div>
+    <div class="card-body">
+        <blockquote class="blockquote mb-0">
+        <p>{{core_sent}}</p>
+        <footer class="blockquote-footer">The Count of Sentence is about <cite title="Source Title">{{core_word_count}} words</cite></footer>
+        </blockquote>
+    </div>
+    </div>
+    <div class="col-md-5 order-md-1">
+      <img src={{newImage}} alt="Girl in a jacket" width="600" height="350">
+
+    </div>
+  </div>
+
+<!--Divider-->
+<hr class="featurette-divider">
+
+<!--Extractive and Adstractive Summary Corner-->
+<div class="summary-container">
+  <div class="title-container">
+      <h3 class="featurette-heading">Quick Summary on Your News Article</h3>
+  </div>
+  <div class="p-5 bg-white rounded shadow mb-5">
+    <!-- Rounded tabs -->
+    <ul id="myTab" role="tablist" class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav">
+      <li class="nav-item flex-sm-fill">
+        <a id="extract-tab" data-toggle="tab" href="#extract" role="tab" aria-controls="extract" aria-selected="true" class="nav-link border-0 text-uppercase font-weight-bold active">Extractive Summary</a>
+      </li>
+      <li class="nav-item flex-sm-fill">
+        <a id="abstract-tab" data-toggle="tab" href="#abstract" role="tab" aria-controls="abstract" aria-selected="false" class="nav-link border-0 text-uppercase font-weight-bold">Abstractive Summary</a>
+      </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+      <div id="extract" role="tabpanel" aria-labelledby="extract-tab" class="tab-pane fade px-4 py-5 show active">
+        <p class="text-muted">{{ extract_sum }}</p>
+        <p class="text-muted mb-0">The Sentence Count is {{ extract_sum_sent }} and The Word Count is {{ extract_sum_word }}.</p>
+        
+        <button type="button" class="btn btn-secondary summary-compare-button btn-lg" data-toggle="modal" data-target="#modalRelatedContent2">Compare with Orginal</button>
+      </div>
+
+      <div id="abstract" role="tabpanel" aria-labelledby="abstract-tab" class="tab-pane fade px-4 py-5">
+        <p class="text-muted">{{ abstract_sum }}</p>
+        <p class="text-muted mb-0">The Sentence Count is {{ abstract_sum_sent }} and The Word Count is {{ abstract_sum_word }}.</p>
+        
+        <button type="button" class="btn btn-secondary summary-compare-button btn-lg" data-toggle="modal" data-target="#modalRelatedContent3">Compare with Original</button>
+        </div>
+    </div>
+    <!-- End rounded tabs -->
+  </div>
+</div>
+
+
+<!--Modal for Extractive Comparsion-->
+  <div class="modal fade right" id="modalRelatedContent2" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading">Extractive News Comparsion</p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body">
+
+        <div class="row compare-container">
+          <div class="col-7 compare-element1">
+            <h3><strong>Orginal Side</strong></h3>
+            <h2>{{ title }}</h2>
+            <p>{{ doc }}</p>
+            <p>The Word Number: {{ doc_word_num }}</p>
+            <p>The Sentence Number: {{ doc_word_sent }}</p>
+          </div>
+
+          <div class="col-7 compare-element2">
+            <h3><strong>Extractive Side</strong></h3>
+            <h2>{{ title }}</h2>
+            <p>{{ extract_sum }}</p>
+            <p>The Word Number: {{ extract_sum_word }}</p>
+            <p>The Sentence Number: {{ extract_sum_sent }}</p>
+            <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
+<!--End for the Extractive-->
+
+
+<!--Modal for Abstractive Comparsion-->
+<div class="modal fade right" id="modalRelatedContent3" tabindex="-1" role="dialog"
+aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-xl modal-dialog-scrollable modal-side modal-bottom-right modal-notify modal-info" role="document">
+  <!--Content-->
+  <div class="modal-content">
+    <!--Header-->
+    <div class="modal-header">
+      <p class="heading">Abstractive News Comparsion</p>
+
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+
+    <!--Body-->
+    <div class="modal-body">
+
+        <div class="row compare-container">
+          <div class="col-7 compare-element1">
+            <h3><strong>Orginal Side</strong></h3>
+            <h2>{{ title }}</h2>
+            <p>{{ doc }}</p>
+            <p>The Word Number: {{ doc_word_num }}</p>
+            <p>The Sentence Number: {{ doc_word_sent }}</p>
+          </div>
+
+          <div class="col-7 compare-element2">
+            <h3><strong>Abstractive Side</strong></h3>
+            <h2>{{ title }}</h2>
+            <p>{{ abstract_sum }}</p>
+            <p>The Word Number: {{ abstract_sum_word }}</p>
+            <p>The Sentence Number: {{ abstract_sum_sent }}</p>
+            <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!--/.Content-->
+</div>
+</div>
+<!--End for the Abstractive-->
+
+
+<!--Important Words Chart-->
+<div class="row featurette">
+    <div class="col-md-7 order-md-2">
+      <h2 class="featurette-heading">1. Which word is important? <span class="text-muted">See our Key Words</span></h2>
+      <p class="lead">How does it work? Using the TF*IDF analysis to reflect how important a word is to a document in a collection or corpus. Let’s see their ranking processed by our search engine.</p>
+    </div>
+    <div class="col-md-5 order-md-1">
+      <!--<svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>-->
+      <canvas id="myChart" width="300" height="200"></canvas>
+    </div>
+</div>
+
+<!--Divider-->
+<hr class="featurette-divider">
+
+<!--Valuable Idea Chart-->
+<div class="row featurette">
+    <div class="col-md-7 left-text">
+      <h2 class="featurette-heading">2. Any Key Ideas recognized? <span class="text-muted">Let’s Learn</span></h2>
+      <p class="lead">It is processing by our Machine Learning Extraction. Using HuggingFace Tramsformers and Tensorflow System, you can see any hot and valuable key concepts in our doughnut chart in percentage ranking.</p>
+    </div>
+    <div class="col-md-5 right-chart">
+      <!--<svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>-->
+        <canvas id="myChart2" width="300" height="200"></canvas>
+    </div>
+</div>
+
+<!--Divider-->
+<hr class="featurette-divider">
+
+<!--Word Cloud Presentation-->
+<div class="row featurette wordcloud-container">
+    <div class="col-md-8 left-text">
+        <img src="../static/images/wordcloud.png" alt="Girl in a jacket" width="100%" height="100%">
+    </div>
+    <div class="col-md-4 right-chart word-cloud-text">
+      <h2 class="featurette-heading">3. A Picture Represent Your News. <span class="text-muted">See for yourself.</span></h2>
+      <p class="lead">What is a Word Cloud? It is visualization of your news article and word collection. Probably, it is a visual representation of words that give greater prominence to words that appear more frequently.</p>
+    </div>
+</div>
+
+
+<!--Divider-->
+<hr class="featurette-divider">
+
+<!--Main Concepts Corner-->
+<div class="container px-4 py-5" id="featured-3">
+    <h2 class="pb-2 border-bottom">Learn Valuable Concepts from You News</h2>
+
+    <p >
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse1" data-parent="#featured-3" aria-expanded="false" aria-controls="multi-collapse1">Normal Key Points</button>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse2" data-parent="#featured-3" aria-expanded="false" aria-controls="multi-collapse2">Diversity Idea</button>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse3" data-parent="#featured-3" aria-expanded="false" aria-controls="multi-collapse3">Interesting Phase</button>
+        <!--<button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Diversity Idea</button>-->
+    </p>
+
+    <section id="team" class="pb-5">
+        <div class="container">
+            <h5 class="section-title h1">IDEA CARD</h5>
+            <div class="row">
+                {% for item in top_keys_mean_list %}
+                <div class="col-xs-12 col-sm-6 col-md-4 collapse.show multi-collapse1">
+                    <div class="image-flip" >
+                        <div class="mainflip flip-0">
+                            <div class="frontside">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <p>
+                                            {% if loop.index == 1 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-1" viewBox="0 0 16 16">
+                                            <circle cx="8" cy="8" r="1.5"/>
+                                            <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                            </svg>
+                                            {% elif loop.index == 2 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-2-fill" viewBox="0 0 16 16">
+                                                <path d="M0 3a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3zm5.5 1a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0zm6.5 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                                            </svg>
+                                            {% elif loop.index == 3 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-3" viewBox="0 0 16 16">
+                                                <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                                <path d="M5.5 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm8 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-4-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                            </svg>
+                                            {% elif loop.index == 4 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-4-fill" viewBox="0 0 16 16">
+                                                <path d="M3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3zm1 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm1.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM4 13.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                            </svg>
+                                            {% elif loop.index == 5 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-5" viewBox="0 0 16 16">
+                                                <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                                <path d="M5.5 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm8 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-8 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm4-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                            </svg>
+                                            {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-6-fill" viewBox="0 0 16 16">
+                                                <path d="M3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3zm1 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm1.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM12 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM4 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                            </svg>
+                                            {% endif %}
+                                        </p>
+                                        <h4 class="card-title">{{ item.keyword}}</h4>
+                                        <p class="card-text">The TF*IDF calculated mark is {{item.mark}}</p>
+                                        <a href="https://www.fiverr.com/share/qb8D02" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="backside">
+                                <div class="card">
+                                    <div class="card-body text-center mt-4">
+                                        <h4 class="card-title">{{ item.keyword}}</h4>
+                                        <p class="card-text">What does it mean? {{item.definition}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% for item in model_keys_list %}
+                <div class="col-xs-12 col-sm-6 col-md-4 collapse multi-collapse2">
+                    <div class="image-flip" >
+                        <div class="mainflip flip-0">
+                            <div class="frontside">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <p>
+                                            {% if loop.index == 1 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-1" viewBox="0 0 16 16">
+                                            <circle cx="8" cy="8" r="1.5"/>
+                                            <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                            </svg>
+                                            {% elif loop.index == 2 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-2-fill" viewBox="0 0 16 16">
+                                                <path d="M0 3a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3zm5.5 1a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0zm6.5 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                                            </svg>
+                                            {% elif loop.index == 3 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-3" viewBox="0 0 16 16">
+                                                <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                                <path d="M5.5 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm8 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-4-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                            </svg>
+                                            {% elif loop.index == 4 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-4-fill" viewBox="0 0 16 16">
+                                                <path d="M3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3zm1 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm1.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM4 13.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                            </svg>
+                                            {% elif loop.index == 5 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-5" viewBox="0 0 16 16">
+                                                <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                                <path d="M5.5 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm8 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-8 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm4-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                            </svg>
+                                            {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-6-fill" viewBox="0 0 16 16">
+                                                <path d="M3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3zm1 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm1.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM12 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM4 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                            </svg>
+                                            {% endif %}
+                                        </p>
+                                        <h4 class="card-title">{{ item.keyword}}</h4>
+                                        <p class="card-text">The importance percentage of this word is {{item.mark}}%</p>
+                                        <a href="https://www.fiverr.com/share/qb8D02" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="backside">
+                                <div class="card">
+                                    <div class="card-body text-center mt-4">
+                                        <h4 class="card-title">{{ item.keyword}}</h4>
+                                        <p class="card-text">Let's our machine explain this word to you! {{item.definition}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% for item in keys_phase_list %}
+                <div class="col-xs-12 col-sm-6 col-md-4 collapse multi-collapse3">
+                    <div class="image-flip" >
+                        <div class="mainflip flip-0">
+                            <div class="frontside">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <p>
+                                            {% if loop.index == 1 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-1" viewBox="0 0 16 16">
+                                            <circle cx="8" cy="8" r="1.5"/>
+                                            <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                            </svg>
+                                            {% elif loop.index == 2 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-2-fill" viewBox="0 0 16 16">
+                                                <path d="M0 3a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3zm5.5 1a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0zm6.5 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                                            </svg>
+                                            {% elif loop.index == 3 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-3" viewBox="0 0 16 16">
+                                                <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                                <path d="M5.5 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm8 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-4-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                            </svg>
+                                            {% elif loop.index == 4 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-4-fill" viewBox="0 0 16 16">
+                                                <path d="M3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3zm1 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm1.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM4 13.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                            </svg>
+                                            {% elif loop.index == 5 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-5" viewBox="0 0 16 16">
+                                                <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
+                                                <path d="M5.5 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm8 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-8 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm4-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                            </svg>
+                                            {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-dice-6-fill" viewBox="0 0 16 16">
+                                                <path d="M3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3zm1 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm1.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM12 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM4 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                            </svg>
+                                            {% endif %}
+                                        </p>
+                                        <h4 class="card-title">{{ item.keyword}}</h4>
+                                        <p class="card-text">The Phase Extraction is performed by Machine Learning Key Phase Extraction</p>
+                                        <a href="https://www.fiverr.com/share/qb8D02" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="backside">
+                                <div class="card">
+                                    <div class="card-body text-center mt-4">
+                                        <h4 class="card-title">{{ item.keyword}}</h4>
+                                        <p class="card-text">How this phase is important and valuable inside this news article? The importance percentage calculated by our machine is {{ item.mark}}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+    
+            </div>
+        </div>
+    </section>
+</div>
+
+<!--<div class="b-example-divider">How Importance?</div>
+
+<h5>How Importance?</h5>
+<div class="chart-container" style="position: relative; height:30vw; width:50vw; display: flex;">
+    <canvas id="myChart" width="300" height="200"></canvas>
+    <canvas id="myChart2" width="300" height="200"></canvas>
+</div> -->
+
+<script type="text/javascript">
+    var ctx = document.getElementById('myChart').getContext('2d');
+    const data = {
+    type: 'bar',
+    data: {
+        labels: [
+            {% for item in top_keys_mean_list %}
+            "{{ item.keyword }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: '# Score of Key Word',
+            data: [
+                {% for item in top_keys_mean_list %}
+                {{ item.mark }},
+                {% endfor %}
+            ],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+};
+    var myChart = new Chart(ctx, data);
+
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    const data2 = {
+        labels: [
+            {% for item in model_keys_list %}
+             "{{ item.keyword}}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'My First Dataset',
+            data: [
+                {% for item in model_keys_list %}
+                    {{ item.mark }},
+                {% endfor %}
+            ],
+            backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)',
+            'rgb(240, 248, 255)',
+            'rgb(0, 100, 0)',
+            'rgb(220, 220, 220)'
+            ],
+            hoverOffset: 6
+        }]
+        };
+
+    const config2 = {
+        type: 'doughnut',
+        data: data2,
+        };
+
+    var myChart2 = new Chart(ctx2, config2);
+</script>
+
+{% endblock %}

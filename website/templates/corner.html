@@ -1,0 +1,91 @@
+{% extends "base.html" %} 
+{% block title %}Your Corner{% endblock %}
+
+{% block content %}
+
+<!-- <div class="jumbotron bg-info text-white jumbotron-fluid slogon-container">
+    <div class="container">
+        <h1 class="display-4">Your Corner</h1>
+        <p class="lead">Personalize your news habit here</p>
+    </div>
+</div>
+
+<ul class="list-group list-grouop-flush" id="records">
+    {% for record in user.records %}
+    <li class="list-group-item">
+        <h1 class="record-title">{{ record.title }}</h1>
+        <p class="record-data">{{record.data}}</p>
+        <div class="corner-button-container btn-toolbar">
+            <button type="button" class="btn btn-primary corner-button">
+                VIEW
+            </button>
+            <button type="button" class="btn btn-secondary corner-button" onclick="deleteNote({{record.id}})">
+                DELETE
+            </button>
+
+        </div>
+    </li>
+    {% endfor %}
+</ul> -->
+
+<link href="../static/css/yourcorner.css" rel="stylesheet">
+<div class="row row-cols-1 row-cols-md-3 mb-3 text-center corner-container">
+    <div class="col corner-outer-card">
+      <div class="card mb-4 rounded-3 shadow-sm corner-inner-card">
+        <div class="card-header py-3 corner-card-top">
+          <h4 class="my-0 fw-normal">Database Design</h4>
+        </div>
+        <div class="card-body corner-card-down">
+          <h1 class="card-title pricing-card-title corner-title">Your History</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>Check Your History</li>
+            <li>Previous News</li>
+            <li>Search by date</li>
+            <li>Sort in Order</li>
+          </ul>
+          <a type="button" href="{{ url_for('views.history')}}" class="w-100 btn btn-lg btn-outline-primary">View</a>
+          <!-- <button type="button" class="w-100 btn btn-lg btn-outline-primary">View</button>-->
+        </div>
+      </div>
+    </div>
+    <div class="col corner-outer-card">
+      <div class="card mb-4 rounded-3 shadow-sm corner-inner-card">
+        <div class="card-header py-3 corner-card-top">
+          <h4 class="my-0 fw-normal">Model Design</h4>
+        </div>
+        <div class="card-body corner-card-down">
+          <h1 class="card-title pricing-card-title corner-title">Recommendation</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>Recommend News</li>
+            <li>Find what you like</li>
+            <li>Explore interests</li>
+            <li>Machine Learning</li>
+          </ul>
+          <a type="button" href="{{ url_for('views.recommendation')}}" class="w-100 btn btn-lg btn-outline-primary">Explore</a>
+          <!-- <button type="button" class="w-100 btn btn-lg btn-outline-primary">Explore</button> -->
+        </div>
+      </div>
+    </div>
+    <div class="col corner-outer-card">
+      <div class="card mb-4 rounded-3 shadow-sm corner-inner-card">
+        <div class="card-header py-3 corner-card-top">
+          <h4 class="my-0 fw-normal">Social Media</h4>
+        </div>
+        <div class="card-body corner-card-down">
+          <h1 class="card-title pricing-card-title corner-title">Communication Board</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>Know more about others</li>
+            <li>Discuss the News</li>
+            <li>Comment your idea</li>
+          </ul>
+          <a type="button" href="{{ url_for('views.discuss')}}" class="w-100 btn btn-lg btn-outline-primary">Comment</a>
+          <!--<button type="button" class="w-100 btn btn-lg btn-outline-primary">Comment</button>-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+{% endblock %}

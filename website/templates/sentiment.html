@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block title %}Sentiment{% endblock %}
+
+{% block content %}
+
+<!-- Custom Design -->
+<link href="../static/css/sentiment.css" rel="stylesheet">
+<!-- For Chart Design -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<div class="container-fluid" id="wrapper">
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4"
+        style="display: flex; text-align: center; justify-content: center;">
+        <h1 class="h3 mb-0 text-gray-800">Text Analysis Dashboard</h1>
+
+    </div>
+
+    <div class="content">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-12">
+                <div class="white-box analytics-info">
+                    <h3 class="box-title">{{ sentimentClassifier.output }}</h3>
+                    <ul class="list-inline two-part d-flex align-items-center mb-0">
+                        <li>
+                            <div id="sparklinedash"><canvas width="67" height="30"
+                                    style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                            </div>
+                        </li>
+                        <li class="ms-auto"><span class="counter text-success">Compound Value: {{ sentimentClassifier.compoundValue }}</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="white-box analytics-info">
+                    <h3 class="box-title">Subjectivity</h3>
+                    <ul class="list-inline two-part d-flex align-items-center mb-0">
+                        <li>
+                            <div id="sparklinedash2"><canvas width="67" height="30"
+                                    style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                            </div>
+                        </li>
+                        <li class="ms-auto"><span class="counter text-purple">{{ sentimentClassifier.overallSubjectivity }}</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="white-box analytics-info">
+                    <h3 class="box-title">Polarity</h3>
+                    <ul class="list-inline two-part d-flex align-items-center mb-0">
+                        <li>
+                            <div id="sparklinedash3"><canvas width="67" height="30"
+                                    style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                            </div>
+                        </li>
+                        <li class="ms-auto"><span class="counter text-info">{{ sentimentClassifier.overallPolarity }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Graph Representaion -->
+            <div class="col-xl-12">
+                <div class="card mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between "
+                        style="background-color: darkslategray">
+                        <h6 class="m-0 font-weight-bold text-primary text-white">Data Visualization</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle text-white" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                    class="bi bi-three-dots" viewBox="0 0 16 16">
+                                    <path
+                                        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                                </svg>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Dropdown Header:</div>
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Visualization -->
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Area Chart -->
+                            <div class="col-xl-7">
+                                <div class="card shadow mb-4">
+                                    <!-- Card Header - Dropdown -->
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                        style="background-color: darkcyan">
+                                        <h6 class="m-0 font-weight-bold text-primary text-white">Overall Statistic</h6>
+                                    </div>
+                                    <!-- Card Body -->
+                                    <div class="card-body">
+                                        <div class="chart-area  pt-4 pb-2">
+                                            <canvas id="dataChart" width="80" height="27"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Area Chart -->
+                            <div class="col-xl-5">
+                                <div class="card shadow mb-4">
+                                    <!-- Card Header - Dropdown -->
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                        style="background-color: darkcyan">
+                                        <h6 class="m-0 font-weight-bold text-primary text-white">Sentiment Distribution
+                                        </h6>
+                                    </div>
+                                    <!-- Card Body -->
+                                    <div class="card-body">
+                                        <div class="chart-area  pt-4 pb-2">
+                                            <canvas id="SentimentChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Graph Representaion -->
+            <div class="col-xl-12">
+                <div class="card mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between "
+                        style="background-color: darkslategray">
+                        <h6 class="m-0 font-weight-bold text-primary text-white">Sentence Sentiment Trend</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle text-white" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                    class="bi bi-three-dots" viewBox="0 0 16 16">
+                                    <path
+                                        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                                </svg>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Dropdown Header:</div>
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Visualization -->
+                    <div class="card-body">
+                        <div class="chart-area  pt-4 pb-2">
+                            <canvas id="DistributeChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var ctxData = document.getElementById('dataChart').getContext('2d');
+        const datachart = {
+            labels: [
+                'Overall Polarity',
+                'Overall Subjectivity',
+                'Compound Percentage',
+            ],
+            datasets: [{
+                axis: 'y',
+                label: 'Content Dataset',
+                data: [
+                    {{sentimentClassifier.overallPolarity}},
+                    {{sentimentClassifier.overallSubjectivity}},
+                    {{sentimentClassifier.compoundPercent}},
+                ],
+                backgroundColor: [
+                    'rgb(219, 112, 147)',
+                    'rgb(175, 238, 238)',
+                    'rgb(211, 211, 211)',
+                ],
+                hoverOffset: 2
+            }]
+        };
+
+        const configdata = {
+            type: 'horizontalBar',
+            data: datachart,
+            options: {
+                indexAxis: 'y',
+            }
+        };
+        var myChartData = new Chart(ctxData, configdata);
+
+        var ctxSentiment = document.getElementById('SentimentChart').getContext('2d');
+        const dataSentiment = {
+            labels: [
+                "Postive",
+                "Netural",
+                "Negative"
+            ],
+            datasets: [{
+                label: 'Sentiment Distribution',
+                data: [
+                    {{sentimentClassifier.positve}},
+                    {{sentimentClassifier.netural}},
+                    {{sentimentClassifier.negative}},
+                ],
+                backgroundColor: [
+                    'rgb(220, 20, 60)',
+                    'rgb(105, 105, 105)',
+                    'rgb(47, 79, 79)'
+                ],
+                hoverOffset: 3
+            }]
+        };
+
+        const configSentiment = {
+            type: 'pie',
+            data: dataSentiment,
+        };
+
+        var myChartSentiment = new Chart(ctxSentiment, configSentiment);
+
+        var ctxDistribute = document.getElementById('DistributeChart').getContext('2d');
+        const dataDistribute = {
+            labels: [
+                {% for sent in sentimentClassifier.sentList %}
+                    "Sentence {{loop.index}}",
+                {% endfor %}
+            ],
+            datasets: [{
+                label: 'Polarity',
+                data: [
+                {% for sent in sentimentClassifier.sentList %}
+                    {{sent.polarity}},
+                {% endfor %}
+                ],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1,
+                hoverOffset: 1
+            },
+            {
+                label: 'Subjectivity',
+                data: [
+                {% for sent in sentimentClassifier.sentList %}
+                    {{sent.subjectivity}},
+                {% endfor %}
+                ],
+                borderColor: 'rgb(192, 75, 192)',
+                tension: 0.1,
+                hoverOffset: 1
+            }]
+        };
+
+        const configDistribute = {
+            type: 'line',
+            data: dataDistribute,
+        };
+
+        var myChartSentiment = new Chart(ctxDistribute, configDistribute);
+
+    </script>
+
+    {% endblock %}

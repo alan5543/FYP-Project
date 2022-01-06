@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Word Network{% endblock %}
+
+{% block content %}
+<br>
+<br>
+<br>
+<h1>Word Network</h1>
+
+<h1>{{title}}</h1>
+
+<h1>{{doc}}</h1>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newsReader">Launch
+    modal</button>
+  <!-- News Fast View Modal -->
+  <div class="modal fade bd-example-modal-xl" id="newsReader" tabindex="-1" role="dialog" aria-labelledby="newsReader"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-5">
+              <!--Carousel Wrapper-->
+              <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails"
+                data-ride="carousel">
+                <!--Slides-->
+                <div class="carousel-inner" role="listbox">
+                  <div class="carousel-item active">
+                    <img class="d-block w-100"
+                      src="../static/defaultImages/user_input_news.png"
+                      alt="News Image">
+                  </div>
+                </div>
+              </div>
+              <!--/.Carousel Wrapper-->
+            </div>
+            <div class="col-lg-7">
+              <h2 class="h2-responsive product-name">
+                <strong>News Title</strong>
+              </h2>
+              <h6 class="h4-responsive">
+                <strong>News Publisher</strong>
+              </h6>
+
+              <!--Reader-->
+              <div class="accordion md-accordion" id="newsAccordion" role="tablist" aria-multiselectable="true">
+                <!-- News Detail -->
+                <div class="card">
+                  <!-- Card header -->
+                  <div class="card-header" role="tab" id="newsDetailHead">
+                    <a data-toggle="collapse" data-parent="#newsAccordion" href="#newsDetail" aria-expanded="true"
+                      aria-controls="newsDetail">
+                      <h5 class="mb-0">
+                        News Detail 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
+                          <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5v-11zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5H12z"/>
+                          <path d="M2 3h10v2H2V3zm0 3h4v3H2V6zm0 4h4v1H2v-1zm0 2h4v1H2v-1zm5-6h2v1H7V6zm3 0h2v1h-2V6zM7 8h2v1H7V8zm3 0h2v1h-2V8zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1z"/>
+                        </svg>
+                      </h5>
+                    </a>
+                  </div>
+                  
+                  <!-- Card body -->
+                  <div id="newsDetail" class="collapse show" role="tabpanel" aria-labelledby="newsDetailHead"
+                    data-parent="#newsAccordion">
+                    <div class="card-body">
+                      <ul>
+                        <li>News Date</li>
+                        <li>News Publisher</li>
+                        <li>News ID</li>
+                      </ul>                      
+                    </div>
+                  </div>
+                </div>
+                <!-- News Detail -->
+
+                <!-- News Quick Sum -->
+                <div class="card">
+                  <!-- Card header -->
+                  <div class="card-header" role="tab" id="newsSumHead">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#newsAccordion" href="#newsSum"
+                      aria-expanded="false" aria-controls="newsSum">
+                      <h5 class="mb-0">
+                        News Quick Summary
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-card-text" viewBox="0 0 16 16">
+                          <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                          <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                      </h5>
+                    </a>
+                  </div>
+
+                  <!-- Card body -->
+                  <div id="newsSum" class="collapse" role="tabpanel" aria-labelledby="newsSumHead"
+                    data-parent="#newsAccordion">
+                    <div class="card-body">
+                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
+                      squid. 3
+                      wolf moon officia aute,
+                      non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                    </div>
+                  </div>
+
+                </div>
+                <!-- News Quick Sum -->
+
+                <!-- News Article -->
+                <div class="card">
+                  <!-- Card header -->
+                  <div class="card-header" role="tab" id="newsArticleHead">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#newsAccordion" href="#newsArticle"
+                      aria-expanded="false" aria-controls="newsArticle">
+                      <h5 class="mb-0">
+                        News Article
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-layout-text-sidebar-reverse" viewBox="0 0 16 16">
+                          <path d="M12.5 3a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5zm0 3a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5zm.5 3.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5zm-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5z"/>
+                          <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2zM4 1v14H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h2zm1 0h9a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5V1z"/>
+                        </svg>
+                      </h5>
+                    </a>
+                  </div>
+
+                  <!-- Card body -->
+                  <div id="newsArticle" class="collapse" role="tabpanel" aria-labelledby="newsArticleHead"
+                    data-parent="#newsAccordion">
+                    <div class="card-body">
+                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
+                      squid. 3
+                      wolf moon officia aute,
+                      non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                    </div>
+                  </div>
+                </div>
+                <!-- News Article -->
+
+              </div>
+              <!-- Reader -->
+
+
+              <!-- Controller -->
+              <div class="card-body">
+                <div class="text-center">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Browse</button>
+                  <button class="btn btn-primary">Read Here
+                    <i class="fas fa-cart-plus ml-2" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /. Controller -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

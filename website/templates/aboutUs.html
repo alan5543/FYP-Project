@@ -1,0 +1,97 @@
+{% extends "base.html" %} {% block title %}About Us{% endblock %} {% block
+content %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{url_for('static', filename='css/aboutUs.css')}}"
+/>
+
+
+<div class="why-us">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <h2 class="mt-5 text-center">About This Project</h2>
+        <p class="mb-5 text-center">
+        It is a FYP project of Information Engineering from City University of Hong Kong. 
+        NewsPoint, which is my developed web application, is the combination of text mining 
+        concepts, NLP, Frontend and Backend Databse server design.
+        </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="row card-container">
+          <div class="col-sm-6 col-lg-4">
+            <div class="card card-1">
+              <h3 class="card-title">News Summarizer</h3>
+              <span class="card-number">01</span>
+              <p class="card-content">
+              Using TF*IDF and Training Model to generate an extractive and abstractive
+              summary, extract the key words and concepts from text.
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <div class="card card-2">
+              <h3 class="card-title">Text Analyzer</h3>
+              <span class="card-number">02</span>
+              <p class="card-content">
+              Using statistic Approach to analysis the structure and readability from
+              the newspaper with a graphical dashboard virtualization.
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <div class="card card-3">
+              <h3 class="card-title">Web Scraping</h3>
+              <span class="card-number">03</span>
+              <p class="card-content">
+              With the API from Google news database and web mining, it can help you to extract different
+              news time to time.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row card-container">
+          <div class="col-sm-6 col-lg-4">
+            <div class="card card-4">
+              <h3 class="card-title">Machine Learning</h3>
+              <span class="card-number">04</span>
+              <p class="card-content">
+              With supervisored learning, the system can distinguish the type
+              of sentence and the importance of words.
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <div class="card card-5">
+              <h3 class="card-title">Input Method</h3>
+              <span class="card-number">05</span>
+              <p class="card-content">
+              Different Input Design, including Text Input, File Input,
+              and the web mining from the input URL to extract the news article.
+              </p>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <div class="card card-6">
+              <h3 class="card-title">Topic Modelling</h3>
+              <span class="card-number">06</span>
+              <p class="card-content">
+              The system can classify different topic and emotion from
+              the newspaper. It can also recommend some interesting news to you.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Why Us Section -->
+
+{% endblock %} 

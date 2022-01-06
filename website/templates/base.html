@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous"
+      />
+      <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        crossorigin="anonymous"
+      />
+
+      <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/custom.css')}}">
+
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+      
+      <title>{% block title %}Home{% endblock %}</title>
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-default bg-dark">
+          <a class="navbar-brand" href="#">NewsPoint</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+            <div class="collapse navbar-collapse" id="navbar">
+
+                <div class="navbar-nav">
+                  {% if user.is_authenticated %}
+                  {% if InputNow  %}
+                  <a class ="nav-item nav-link" id="home" href="/">News Extraction</a>
+                  <a class ="nav-item nav-link" id="explore" href="/explore">Explore News</a>
+                  <a class ="nav-item nav-link" id="corner" href="/yourCorner">Your Corner</a>
+                  <a class ="nav-item nav-link" id="hktoday" href="/HKToday">HK Today</a>
+                  <a class ="nav-item nav-link" id="aboutus" href="/AboutUs">About Us</a>
+                  {% else %}
+                  <a class ="nav-item nav-link" id="dashboard" href="/dashboard">Dashboard</a>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Result
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="/summary">News Summary</a>
+                      <a class="dropdown-item" href="/sentiment">News Sentiment</a>
+                      <a class="dropdown-item" href="/discoverMore">Discover More</a>
+                      <a class="dropdown-item" href="/textAnalysis">Text Tools</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="/modelling">Modelling Concept</a>
+                      <a class="dropdown-item" href="/wordNetwork">Word Network</a>
+                    </div>
+                  </li>
+                  <a class ="nav-item nav-link" id="home" href="/">Exit</a>
+                  {% endif %}
+                  <a class ="nav-item nav-link" id="logout" href="/logout">logout</a>
+                  {% else %}
+                  <a class ="nav-item nav-link" id="login" href="/login">Login</a>
+                  <a class ="nav-item nav-link" id="signUp" href="/sign">Sign Up</a>
+                  <a class ="nav-item nav-link" id="aboutus" href="/AboutUs">About Us</a>
+                  {% endif %}
+                </div>
+            </div>
+        </nav>
+        
+
+        <div class="main-container">
+          <!--Display for any flash message, no matter success or error-->
+          {% with messages = get_flashed_messages(with_categories=true) %} 
+            {% if messages %} 
+              {% for category, message in messages %} 
+                {% if category == 'error' %}
+                  <div class="alert alert-danger alter-dismissable fade show messageBox" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">
+                      <!--close button-->
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+                {% else %}
+                  <div class="alert alert-success alter-dismissable fade show messageBox" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">
+                      <!--close button-->
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+          <div class="content-container">
+              {% block content %}
+              {% endblock %}
+          </div>
+      </div>
+
+        <script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+      ></script>
+      <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+      ></script>
+
+      <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='index.js') }}"
+    ></script>
+
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+
+    {% block scripts %}{% endblock %}
+
+    </body>
+</html>
+</html>

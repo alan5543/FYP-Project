@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}News Extraction{% endblock %}
+
+{% block content %}
+
+
+
+<div class="jumbotron jumbotron-fluid slogon-container">
+    <div class="container">
+        <h1 class="display-4">News Extraction</h1>
+        <p class="lead">Learn from news, data extraction from NLP</p>
+        <a class="btn btn-secondary" href="{{ url_for('views.home')}}">Refresh</a>
+    </div>
+</div>
+
+
+<nav class="nav justify-content-center" >
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-text-tab" data-toggle="tab" href="#nav-text" role="tab" onclick="return UpdateSeletedTab(1);"
+            aria-controls="nav-text" aria-selected="true">NLP with Text</a>
+        <a class="nav-item nav-link" id="nav-file-tab" data-toggle="tab" href="#nav-file" role="tab" onclick="return UpdateSeletedTab(2);"
+            aria-controls="nav-file" aria-selected="false">Upload Text File</a>
+        <a class="nav-item nav-link" id="nav-url-tab" data-toggle="tab" href="#nav-url" role="tab" onclick="return UpdateSeletedTab(3);"
+            aria-controls="nav-url" aria-selected="false">Input URL</a>
+    </div>
+</nav>
+<!-- <form class="form-group" method="POST" action="/analyze">
+<input id="CurrentSelectedTab" value="1" name="currentSelectedTab" type="submit"/> -->
+
+<div class="tab-content" id="nav-tabContent">
+
+    <div class="tab-pane fade show active input-container" id="nav-text" role="tabpanel" aria-labelledby="nav-text-tab">
+        <!--The Text Input-->
+        <div class="container">
+            <form class="form-group" method="POST" action="/analyzeText">
+                <input type="newstitle" class="form-control title_container" id="newstitle" aria-describedby="newstitleHelp" placeholder="Enter News Title" name="newstitle">
+                <textarea name="newstext" id="newstext" cols="6" rows="6" class="form-control textarea-container" placeholder="Enter News Article"></textarea>
+
+                <button type="submit" class="btn btn-primary">Process</button>
+                <button type="reset" class="btn btn-secondary">Clear</button>
+                <!-- <input type="hidden" id="CurrentSelectedTab" value="1" name="CurrentSelectedTab"/> -->
+            </form>
+        </div>
+    </div>
+
+    <div class="tab-pane fade input-container" id="nav-file" role="tabpanel" aria-labelledby="nav-file-tab">
+        <!--The File Input-->
+        <div class="container upload_text_container">
+            <form class="form-group" action="/analyzeFile" method="POST" enctype="multipart/form-data">
+                <input type="newstitle" class="form-control title_container" id="newstitle" aria-describedby="newstitleHelp" placeholder="Enter News Title" name="newstitle" style="margin-bottom: 2%;">
+                <div class="upload_text">
+                    <input type="file" name="myfile" ><br>
+                    <button type="submit" class="btn btn-secondary">Process</button>
+                    <!-- <input id="CurrentSelectedTab" name="CurrentSelectedTab"/> -->
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="tab-pane fade input-container" id="nav-url" role="tabpanel" aria-labelledby="nav-url-tab">
+        <!--The URL Input-->
+        <div class="container upload_url_container">
+            <form class="form-group" action="/analyzeUrl" method="POST">
+                <label for="inputUrl">News URL</label>
+                <input type="url" class="form-control" id="inputUrl" aria-describedby="urlHelp" placeholder="Enter URL" name="NewsUrl">
+                <small id="urlHelp" class="form-text text-muted">You can import the URL of news article in different websites</small>
+                <br>
+                <button type="submit" class="btn btn-secondary">Process</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+</form>
+
+<div class="dashbroad-container">
+    <p>
+        {{newstitle}}
+    </p>
+    <p>
+        {{newstext}}
+    </p>
+</div>
+
+
+<script type="text/javascript">
+    function UpdateSeletedTab(i) {
+        console.log("Tab: " + i);
+        $("#CurrentSelectedTab").val(i);
+    }
+</script>
+
+{% endblock %}
