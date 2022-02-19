@@ -131,7 +131,7 @@ def get_tweets():
             content = request.json
             rawtext = content["keyword"]
 
-            demo = True
+            demo = False
             if demo:
                 from .constants import TWEET_DEMO
                 return TWEET_DEMO

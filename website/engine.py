@@ -356,7 +356,7 @@ def extractive_summarizer(doc: STRING):
 
 #----------------------------------------------------------------------------------------
 # Text Summarizer with model
-""" from transformers import pipeline, PegasusForConditionalGeneration, PegasusTokenizer
+from transformers import pipeline, PegasusForConditionalGeneration, PegasusTokenizer
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
 import spacy
@@ -405,13 +405,13 @@ def getAbstractiveSum(chunk_sent):
         return full_summary_text, getWordCount(full_summary_text), getSentenceCount(full_summary_text)
 
     except:
-        return constants.DEFAULT_ERROR_MESSAGE, getWordCount(constants.DEFAULT_ERROR_MESSAGE), getSentenceCount(constants.DEFAULT_ERROR_MESSAGE) """
+        return constants.DEFAULT_ERROR_MESSAGE, getWordCount(constants.DEFAULT_ERROR_MESSAGE), getSentenceCount(constants.DEFAULT_ERROR_MESSAGE)
          
 
 
 #----------------------------------------------------------------------------------------
 # Core Sentence Extraction
-""" tokenizer = PegasusTokenizer.from_pretrained("google/pegasus-xsum")
+tokenizer = PegasusTokenizer.from_pretrained("google/pegasus-xsum")
 model = PegasusForConditionalGeneration.from_pretrained("google/pegasus-xsum")
 
 def getCoreSent(doc: STRING):
@@ -421,7 +421,7 @@ def getCoreSent(doc: STRING):
     print("End Core Extraction...")
     decode_sum = summary[0]
     core_sent = tokenizer.decode(decode_sum)
-    return core_sent, getWordCount(core_sent) """
+    return core_sent, getWordCount(core_sent)
 
 #------------------------------------------------------------------------------------------
 # Name Recognition Breakdown
@@ -499,14 +499,14 @@ def generate_summary(title, doc):
 
         # Abstractive Summary
         print("Doing the abstractive Summary ..")
-        # chunking = chunk_sent(doc)
-        # (abstract_sum, abstract_sum_word, abstract_sum_sent) = getAbstractiveSum(chunking)
-        (abstract_sum, abstract_sum_word, abstract_sum_sent) = ("No Record", 2, 1)
+        chunking = chunk_sent(doc)
+        (abstract_sum, abstract_sum_word, abstract_sum_sent) = getAbstractiveSum(chunking)
+        # (abstract_sum, abstract_sum_word, abstract_sum_sent) = ("No Record", 2, 1)
 
         # Core Sentence
         print("Extracting the core sentence ...")
-        # (core_sent, core_word_count) = getCoreSent(doc)
-        (core_sent, core_word_count) = ("No Record", 2)
+        (core_sent, core_word_count) = getCoreSent(doc)
+        # (core_sent, core_word_count) = ("No Record", 2)
 
         # generate struture
         print("Generating the summary report ...")
