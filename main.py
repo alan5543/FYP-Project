@@ -11,5 +11,5 @@ app = create_app()
 # for getting the exploreNews newlist
 # by calling the funciton from new.py and app
 # threading.Thread(target=website.news.toNewlist(app)).start()
-main()
+# main()
 
