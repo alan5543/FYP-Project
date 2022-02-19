@@ -4,35 +4,15 @@
 {% block content %}
 
 
-<!-- <div class="jumbotron bg-info text-white jumbotron-fluid slogon-container">
-    <div class="container">
-        <h1 class="display-4">Your Corner</h1>
-        <p class="lead">Personalize your news habit here</p>
-    </div>
-</div>
-
-<ul class="list-group list-grouop-flush" id="records">
-    {% for record in user.records %}
-    <li class="list-group-item">
-        <h1 class="record-title">{{ record.title }}</h1>
-        <p class="record-data">{{record.data}}</p>
-        <div class="corner-button-container btn-toolbar">
-            <button type="button" class="btn btn-primary corner-button">
-                VIEW
-            </button>
-            <button type="button" class="btn btn-secondary corner-button" onclick="deleteNote({{record.id}})">
-                DELETE
-            </button>
-
-        </div>
-    </li>
-    {% endfor %}
-</ul> -->
-
 
 <link href="../static/css/yourcorner.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
-<div class="jumbotron bg-dark text-white jumbotron-fluid slogon-container">
+<link href="..\static\css\global.css" rel="stylesheet" type="text/css">
+
+  <!-- Floating Btn -->
+  <link href="..\static\css\floatingBtn\style.css" rel="stylesheet">
+
+<div class="jumbotron bg-dark text-white jumbotron-fluid slogon-container banner">
     <div class="container">
         <h1 class="display-4">Your History</h1>
         <p class="lead">Find the input record here</p>
@@ -73,6 +53,65 @@
         {% endfor %}
       </tbody>
   </table>
+</div>
+
+
+<!-- Floating Btn -->
+<div class="fab-wrapper">
+  <input id="fabCheckbox" type="checkbox" class="fab-checkbox" />
+  <label class="fab" for="fabCheckbox">
+    <span class="fab-dots fab-dots-1"></span>
+    <span class="fab-dots fab-dots-2"></span>
+    <span class="fab-dots fab-dots-3"></span>
+  </label>
+  <div class="fab-wheel">
+
+    <a class="fab-action fab-action-1 float" href='/explore'>
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-newspaper logo-white" viewBox="0 0 16 16">
+            <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5v-11zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5H12z"/>
+            <path d="M2 3h10v2H2V3zm0 3h4v3H2V6zm0 4h4v1H2v-1zm0 2h4v1H2v-1zm5-6h2v1H7V6zm3 0h2v1h-2V6zM7 8h2v1H7V8zm3 0h2v1h-2V8zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1z"/>
+        </svg>
+    </a>
+
+    <div class="label-container">
+      <div class="label-text">Today News</div>
+      <i class="fa fa-play label-arrow"></i>
+    </div>
+
+    <a class="fab-action fab-action-2 float" href='/userInput'>
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-hand-index-fill logo-white" viewBox="0 0 16 16">
+          <path d="M8.5 4.466V1.75a1.75 1.75 0 1 0-3.5 0v5.34l-1.2.24a1.5 1.5 0 0 0-1.196 1.636l.345 3.106a2.5 2.5 0 0 0 .405 1.11l1.433 2.15A1.5 1.5 0 0 0 6.035 16h6.385a1.5 1.5 0 0 0 1.302-.756l1.395-2.441a3.5 3.5 0 0 0 .444-1.389l.271-2.715a2 2 0 0 0-1.99-2.199h-.581a5.114 5.114 0 0 0-.195-.248c-.191-.229-.51-.568-.88-.716-.364-.146-.846-.132-1.158-.108l-.132.012a1.26 1.26 0 0 0-.56-.642 2.632 2.632 0 0 0-.738-.288c-.31-.062-.739-.058-1.05-.046l-.048.002z"/>
+      </svg>
+    </a>
+
+    <div class="label-container">
+      <div class="label-text">User News Input</div>
+      <i class="fa fa-play label-arrow"></i>
+    </div>
+
+    <a class="fab-action fab-action-3 float" href='/inputHashtag'>
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-twitter logo-white" viewBox="0 0 16 16">
+          <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+      </svg>
+    </a>
+
+    <div class="label-container">
+      <div class="label-text">Twitter Search</div>
+      <i class="fa fa-play label-arrow"></i>
+    </div>
+
+    <a class="fab-action fab-action-4 float" href='/'>
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-skip-backward-fill logo-white" viewBox="0 0 16 16">
+        <path d="M.5 3.5A.5.5 0 0 0 0 4v8a.5.5 0 0 0 1 0V8.753l6.267 3.636c.54.313 1.233-.066 1.233-.697v-2.94l6.267 3.636c.54.314 1.233-.065 1.233-.696V4.308c0-.63-.693-1.01-1.233-.696L8.5 7.248v-2.94c0-.63-.692-1.01-1.233-.696L1 7.248V4a.5.5 0 0 0-.5-.5z"/>
+        </svg>
+    </a>
+
+    <div class="label-container">
+      <div class="label-text">Back</div>
+      <i class="fa fa-play label-arrow"></i>
+    </div>
+
+  </div>
 </div>
 
 

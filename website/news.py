@@ -1,13 +1,19 @@
+from ast import Constant
 from newspaper.configuration import ArticleConfiguration
 from pygooglenews import GoogleNews
-import nltk
+
 from newspaper import Article
-
 from website import constants
-
 from .models import ExploreNew
+from .constants import TOPIC_LIMIT
+
+from flask import current_app
 from . import db
 
+import nltk
+nltk.download('punkt')
+
+import random
 
 # a news container for exploring the news today
 global newlist
@@ -85,3 +91,80 @@ def updateDatabase(title, text, summary, date, publish, image, link, app):
             db.session.add(arrival_news)
             db.session.commit()
             print(constants.LOG_DB_SUCCESS)
+
+
+def select_news_by_topic(topic):
+    google = GoogleNews()
+    if topic == constants.TOPIC_WORLD:
+        return google.topic_headlines('WORLD', proxies=None, scraping_bee = None)
+    elif topic == constants.TOPIC_HK:
+        return google.geo_headlines('Hong Kong', proxies=None, scraping_bee = None)
+    elif topic == constants.TOPIC_BUSINESS:
+        return google.topic_headlines('BUSINESS', proxies=None, scraping_bee = None)
+    elif topic == constants.TOPIC_TECH:
+        return google.topic_headlines('TECHNOLOGY', proxies=None, scraping_bee = None)
+    elif topic == constants.TOPIC_ENTERTAIN:
+        return google.topic_headlines('ENTERTAINMENT', proxies=None, scraping_bee = None)
+    elif topic == constants.TOPIC_SCIENCE:
+        return google.topic_headlines('SCIENCE', proxies=None, scraping_bee = None)
+    elif topic == constants.TOPIC_SPORTS:
+        return google.topic_headlines('SPORTS', proxies=None, scraping_bee = None)
+    elif topic == constants.TOPIC_HEALTH:
+        return google.topic_headlines('HEALTH', proxies=None, scraping_bee = None)
+    else:
+        return google.top_news()
+
+
+def get_news(topic):
+    news = select_news_by_topic(topic)
+    newID = constants.DEFAULT_NEW_ID
+    res = []
+    for item in news['entries']:
+        # initialize the elements of news
+        link = item['link']
+        title = item['title']
+        date = item['published']
+        publish = item['source']['title']
+        
+        try:
+            article = Article(item['link'])
+            article.download()
+            article.parse()
+            article.nlp()
+
+            # add the new elements of newspaper
+            text = article.text
+            summary = article.summary
+            image_loc = article.top_image
+            if article.top_image == None or article.top_image == "" or len(article.top_image) == 0:
+                # a dummy icon for photo not found
+                image_loc = constants.DEFAULT_INPUT_IMAGE
+            
+            # add news item to list
+            res.append(extractNews(newID, title, text, summary, date, publish, image_loc, link))
+
+            # add to the database as record
+            updateDatabase(title, text, summary, date, publish, image_loc, link, current_app)
+
+            # if target the news count leave loop
+            if newID >= TOPIC_LIMIT:
+                break
+
+            # increment the ID
+            newID = newID + 1
+        except:
+            print(constants.LOG_TRY_SKIP)
+    return res
+
+
+def get_news_from_db():
+    dbNews = ExploreNew.query.order_by(ExploreNew.date).all()
+
+    # check dbNews contains null or not
+    if len(dbNews) == 0:
+        dbNews = get_news(constants.TOPIC_WORLD)
+
+    # random the order each time
+    random.shuffle(dbNews)
+    
+    return dbNews

@@ -1,280 +1,1111 @@
-{% extends "base.html" %}
-{% block title %}Sentiment{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Sentiment{% endblock %} {% block
+content %}
 
 <!-- Custom Design -->
-<link href="../static/css/sentiment.css" rel="stylesheet">
+<link href="../static/css/sentiment.css" rel="stylesheet" />
 <!-- For Chart Design -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
+<!-- For Data Visualization -->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css"
+/>
+
+
+<!-- Like Btn -->
+<link href="..\static\css\likeBtn\style.css" rel="stylesheet" />
+
+
+<!-- Loader -->
+<div class="loader-wrapper">
+  <div class="waitingContainer centerLoader">
+    <div>
+      <span class="loader"><span class="loader-inner"></span></span>
+    </div>
+    <h4 class="waitingInfo" id="waitingText"></h4>
+  </div>
+</div>
+
+
 <div class="container-fluid" id="wrapper">
+  <div
+    class="d-sm-flex align-items-center justify-content-between mb-4"
+    style="display: flex; text-align: center; justify-content: center"
+  >
+    <h1 class="h3 mb-0 text-gray-800 titleStyle">News Sentiment Dashboard</h1>
+  </div>
 
-    <div class="d-sm-flex align-items-center justify-content-between mb-4"
-        style="display: flex; text-align: center; justify-content: center;">
-        <h1 class="h3 mb-0 text-gray-800">Text Analysis Dashboard</h1>
+  <!-- Point Of View -->
+  <div
+    class="modal fade"
+    id="viewModalCenter"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="viewModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Point Of View</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+        
+            <!-- Area Chart -->
+            <div class="col-xl-2">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                  style="background-color: darkcyan"
+                >
+                  <h6 class="m-0 font-weight-bold text-primary text-white">
+                    Overall Statistic
+                  </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body flexBox">
+                    <div class="displayBox targetBox marginCorner">
+                        <p class="text-white">-</p>
+                        <h5 class="text-white text-bold top-margin">
+                            {% if sentimentClassifier.output == "Negative" %} Pessimistic {%
+                            elif sentimentClassifier.output == "Netural" %} Realistic {% elif
+                            sentimentClassifier.output == "Positive" %} Optimistic {% else %}
+                            {{ sentimentClassifier.output }} {% endif %}
+                        </h5>
+                    </div>
+                    <div class="displayBox infoBox">
+                        <p>-</p>
+                    <span class="text-bold top-margin"
+                        >Score {{sentimentClassifier.compoundValue }}
+                    </span>
+                    </div>
+                </div>
+              </div>
+            </div>
 
+            <!-- Area Chart -->
+            <div class="col-xl-10">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                  style="background-color: darkcyan"
+                >
+                  <h6 class="m-0 font-weight-bold text-primary text-white">
+                    Overall Statistic
+                  </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area pt-4 pb-2">
+                    <canvas id="dataChart" width="80" height="27"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sentiment -->
+  <div
+    class="modal fade"
+    id="sentModalCenter"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="sentModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Sentiment</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-2">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                  style="background-color: darkcyan"
+                >
+                  <h6 class="m-0 font-weight-bold text-primary text-white">
+                    Overall Statistic
+                  </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body flexBox">
+                    <div class="sentimentDisplayBox targetBox marginCorner">
+                        <p class="text-white">-</p>
+                        <h5 class="text-white text-bold top-margin">
+                            {% if sentimentClassifier.overallPolarity < -0.66 %}
+                            Strongly Negative
+                            {% elif sentimentClassifier.overallPolarity < -0.33 %}
+                            Moderately Negative
+                            {% elif sentimentClassifier.overallPolarity < -0.05 %}
+                            Slightly Negative
+                            {% elif sentimentClassifier.overallPolarity < 0.05 %}
+                            Moderately Netural
+                            {% elif sentimentClassifier.overallPolarity < 0.33 %}
+                            Slightly Positive
+                            {% elif sentimentClassifier.overallPolarity < 0.66 %}
+                            Moderately Postive
+                            {% elif sentimentClassifier.overallPolarity < 1 %}
+                            Strongly Negative
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="sentimentDisplayBox infoBox">
+                    <p>-</p>
+                                      <span class="text-bold top-margin"
+                >Polarity Score: ({{'%0.2f'|
+                format(sentimentClassifier.overallPolarity *100|float)}}%)</span
+              >
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Area Chart -->
+            <div class="col-xl-10">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                  style="background-color: darkcyan"
+                >
+                  <h6 class="m-0 font-weight-bold text-primary text-white">
+                    Sentiment Distribution
+                  </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area pt-4 pb-2">
+                    <canvas id="SentimentChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subjectivity -->
+  <div
+    class="modal fade"
+    id="subModalCenter"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="subModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Subjectivity</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <!-- Area Chart -->
+            <div class="col-xl-12">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                  style="background-color: darkcyan"
+                >
+                  <h6 class="m-0 font-weight-bold text-primary text-white">
+                    Subjectivity Percentage
+                  </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area pt-4 pb-2">
+                    <canvas id="subjChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emotion -->
+  <div
+    class="modal fade"
+    id="emoModalCenter"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="emoModalCenterTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Emotion</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <!-- Area Chart -->
+            <div class="col-xl-6">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                  style="background-color: darkcyan"
+                >
+                  <h6 class="m-0 font-weight-bold text-primary text-white">
+                    Overall Emotion
+                  </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area pt-4 pb-2">
+                    {% if highProbEmotion['Emotion'] == "anger" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/anger.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text"><strong>This article shows Anger!</strong></h3>
+                    {% elif highProbEmotion['Emotion'] == "disgust" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/disgust.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text">
+                      <strong>This article shows Disgustive...</strong>
+                    </h3>
+                    {% elif highProbEmotion['Emotion'] == "fear" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/fear.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text"><strong>This article shows Fear...</strong></h3>
+                    {% elif highProbEmotion['Emotion'] == "joy" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/joy.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text">
+                      <strong>This article shows Joyness</strong>
+                    </h3>
+                    {% elif highProbEmotion['Emotion'] == "neutral" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/neutral.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text"><strong>No Options...</strong></h3>
+                    {% elif highProbEmotion['Emotion'] == "sadness" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/sad.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text"><strong>This article shows Sadness...</strong></h3>
+                    {% elif highProbEmotion['Emotion'] == "shame" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/shame.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text"><strong>This article shows Shame...</strong></h3>
+                    {% elif highProbEmotion['Emotion'] == "surprise" %}
+                    <img
+                      src="{{url_for('static', filename='emoji/surprise.png')}}"
+                      width="180"
+                      height="180"
+                    />
+                    <h3 class="emoji-text">
+                      <strong>This article shows Surprise!</strong>
+                    </h3>
+                    {% else %}
+                    <h3 class="emoji-text">
+                      <strong>{{ highProbEmotion['Emotion'] }}</strong>
+                    </h3>
+                    {% endif %}
+
+                    <h5 class="emoji-score">
+                      <span
+                        >Predicted Score: {{ highProbEmotion['Proba']}}</span
+                      >
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Area Chart -->
+            <div class="col-xl-6">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                  class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                  style="background-color: darkcyan"
+                >
+                  <h6 class="m-0 font-weight-bold text-primary text-white">
+                    Emotion Prediction
+                  </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area pt-4 pb-2">
+                    <canvas id="EmotionChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-sm-6">
+        <div class="card-box bg-blue">
+          <div class="inner">
+            <h3>Point of View</h3>
+            <h5 class="elementStyle">
+              {% if sentimentClassifier.output == "Negative" %} Pessimistic {%
+              elif sentimentClassifier.output == "Netural" %} Realistic {% elif
+              sentimentClassifier.output == "Positive" %} Optimistic {% else %}
+              {{ sentimentClassifier.output }} {% endif %}
+            </h5>
+          </div>
+          <div class="icon">
+            <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+          </div>
+          <a
+            type="button"
+            class="card-box-footer"
+            data-toggle="modal"
+            data-target="#viewModalCenter"
+          >
+            View More <i class="fa fa-arrow-circle-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-sm-6">
+        <div class="card-box bg-green">
+          <div class="inner">
+            <h3>Sentiment</h3>
+            <h5 class="elementStyle">
+                            {% if sentimentClassifier.overallPolarity < -0.66 %}
+                            Strongly Negative
+                            {% elif sentimentClassifier.overallPolarity < -0.33 %}
+                            Moderately Negative
+                            {% elif sentimentClassifier.overallPolarity < -0.05 %}
+                            Slightly Negative
+                            {% elif sentimentClassifier.overallPolarity < 0.05 %}
+                            Moderately Netural
+                            {% elif sentimentClassifier.overallPolarity < 0.33 %}
+                            Slightly Positive
+                            {% elif sentimentClassifier.overallPolarity < 0.66 %}
+                            Moderately Postive
+                            {% elif sentimentClassifier.overallPolarity < 1 %}
+                            Strongly Negative
+                            {% endif %}
+            </h5>
+          </div>
+          <div class="icon">
+            <i class="fa fa-book" aria-hidden="true"></i>
+          </div>
+          <a
+            type="button"
+            class="card-box-footer"
+            data-toggle="modal"
+            data-target="#sentModalCenter"
+          >
+            View More <i class="fa fa-arrow-circle-right"></i>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="card-box bg-orange">
+          <div class="inner">
+            <h3>Subjectivity</h3>
+            <h5 class="elementStyle">
+              {% if sentimentClassifier.overallSubjectivity < 0.25 %} Strongly
+              Objective {% elif sentimentClassifier.overallSubjectivity < 0.5 %}
+              Slightly Objective {% elif sentimentClassifier.overallSubjectivity
+              < 0.75 %} Slightly Subjective {% elif
+              sentimentClassifier.overallSubjectivity < 1 %} Strongly Subjective
+              {% endif %}
+            </h5>
+          </div>
+          <div class="icon">
+            <i class="fa fa-user-plus" aria-hidden="true"></i>
+          </div>
+          <a
+            type="button"
+            class="card-box-footer"
+            data-toggle="modal"
+            data-target="#subModalCenter"
+          >
+            View More <i class="fa fa-arrow-circle-right"></i>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="card-box bg-red">
+          <div class="inner">
+            <h3>Author Emotion</h3>
+            <h5 class="elementStyle">
+              {% macro sentence_case(text) %} {{ text[0]|upper}}{{text[1:] }} {%
+              endmacro %} {{sentence_case(highProbEmotion['Emotion'])}}
+            </h5>
+          </div>
+          <div class="icon">
+            <i class="fa fa-commenting-o"></i>
+          </div>
+          <a
+            type="button"
+            class="card-box-footer"
+            data-toggle="modal"
+            data-target="#emoModalCenter"
+          >
+            View More <i class="fa fa-arrow-circle-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+{#     <div class="row justify-content-center">
+      <div class="col-lg-4 col-md-12">
+        <div class="white-box analytics-info">
+          {% if sentimentClassifier.output == "Negative" %}
+          <h3 class="box-title">Pessimistic Article</h3>
+          {% elif sentimentClassifier.output == "Netural" %}
+          <h3 class="box-title">Realistic Article</h3>
+          {% elif sentimentClassifier.output == "Positive" %}
+          <h3 class="box-title">Optimistic Article</h3>
+          {% else %}
+          <h3 class="box-title">{{ sentimentClassifier.output }}</h3>
+          {% endif %}
+          <ul class="list-inline two-part d-flex align-items-center mb-0">
+            <li>
+              <div id="sparklinedash">
+                <canvas
+                  width="67"
+                  height="30"
+                  style="
+                    display: inline-block;
+                    width: 67px;
+                    height: 30px;
+                    vertical-align: top;
+                  "
+                ></canvas>
+              </div>
+            </li>
+            <li class="ms-auto">
+              <span class="counter text-success"
+                >Compound Value: ({{sentimentClassifier.compoundValue }})
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-12">
+        <div class="white-box analytics-info">
+          {% if sentimentClassifier.overallSubjectivity < 0.25 %}
+          <h3 class="box-title">Strongly Objective Article</h3>
+          {% elif sentimentClassifier.overallSubjectivity < 0.5 %}
+          <h3 class="box-title">Slightly Objective Article</h3>
+          {% elif sentimentClassifier.overallSubjectivity < 0.75 %}
+          <h3 class="box-title">Slightly Subjective Article</h3>
+          {% elif sentimentClassifier.overallSubjectivity < 1 %}
+          <h3 class="box-title">Strongly Subjective Article</h3>
+          {% endif %}
+          <ul class="list-inline two-part d-flex align-items-center mb-0">
+            <li>
+              <div id="sparklinedash2">
+                <canvas
+                  width="67"
+                  height="30"
+                  style="
+                    display: inline-block;
+                    width: 67px;
+                    height: 30px;
+                    vertical-align: top;
+                  "
+                ></canvas>
+              </div>
+            </li>
+            <li class="ms-auto">
+              <span class="counter text-purple"
+                >Subjectivity Score: ({{'%0.2f'|
+                format(sentimentClassifier.overallSubjectivity*100|float)}}%)
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-12">
+        <div class="white-box analytics-info">
+          {% if sentimentClassifier.overallPolarity < -0.66 %}
+          <h3 class="box-title">Strongly Negative</h3>
+          {% elif sentimentClassifier.overallPolarity < -0.33 %}
+          <h3 class="box-title">Moderately Negative</h3>
+          {% elif sentimentClassifier.overallPolarity < -0.05 %}
+          <h3 class="box-title">Slightly Negative</h3>
+          {% elif sentimentClassifier.overallPolarity < 0.05 %}
+          <h3 class="box-title">Moderately Netural</h3>
+          {% elif sentimentClassifier.overallPolarity < 0.33 %}
+          <h3 class="box-title">Slightly Positive</h3>
+          {% elif sentimentClassifier.overallPolarity < 0.66 %}
+          <h3 class="box-title">Moderately Postive</h3>
+          {% elif sentimentClassifier.overallPolarity < 1 %}
+          <h3 class="box-title">Strongly Negative</h3>
+          {% endif %}
+
+          <ul class="list-inline two-part d-flex align-items-center mb-0">
+            <li>
+              <div id="sparklinedash3">
+                <canvas
+                  width="67"
+                  height="30"
+                  style="
+                    display: inline-block;
+                    width: 67px;
+                    height: 30px;
+                    vertical-align: top;
+                  "
+                ></canvas>
+              </div>
+            </li>
+            <li class="ms-auto">
+              <span class="counter text-info"
+                >Polarity Score: ({{'%0.2f'|
+                format(sentimentClassifier.overallPolarity *100|float)}}%)</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div> #}
+
+    <div class="row">
+      <!-- Graph Representaion -->
+      <div class="col-xl-12">
+        <div class="card mb-4">
+          <!-- Card Header - Dropdown -->
+          <div
+            class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+            style="background-color: darkslategray"
+          >
+            <h6 class="m-0 font-weight-bold text-primary text-white">
+              Sentence Sentiment Trend
+            </h6>
+          <div class="dropdown no-arrow">
+
+
+          <a
+            type="button"
+            class="card-box-footer text-white"
+            id="dropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            View More <i class="fa fa-arrow-circle-right text-white"></i>
+          </a>
+
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+              <div class="dropdown-header">Dropdown Header:</div>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item collapsed" data-toggle="collapse" data-target="#showTrend" aria-expanded="false"
+                aria-controls="collapseThree">Sentiment Trend Between Sentence</a>
+              <a class="dropdown-item collapsed" data-toggle="collapse" data-target="#showTable" aria-expanded="false"
+                aria-controls="collapseFour">Sentence Calculation Detail</a>
+            </div>
+          </div>
+          </div>
+
+          <!-- Data Visualization -->
+          <div class="card-body collapse show" id="showTrend" >
+            <div class="chart-area pt-4 pb-2">
+              <canvas id="DistributeChart"></canvas>
+            </div>
+          </div>
+
+          <div  class="card-body collapse" id="showTable">
+          <!-- Data Visualization -->
+          <div class="card-body">
+            <table
+              id="sentimentDisplay"
+              class="table table-striped table-bordered"
+            >
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Extracted Sentence</th>
+                  <th>Sentiment</th>
+                  <th>Calculation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sent in sentimentClassifier.sentList %}
+                <tr>
+                  <td>Sentence {{loop.index}}</td>
+                  <td>{{ sent.sentence}}</td>
+                  <td>
+                    {% if sent.polarity < 0 %} Negative {% elif sent.polarity ==
+                    0 %} Netural {% else %} Positive {% endif %}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-toggle="modal"
+                      data-target="#exampleModal{{loop.index}}"
+                    >
+                      Show
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Modal -->
+                <div
+                  class="modal fade"
+                  id="exampleModal{{loop.index}}"
+                  tabindex="-1"
+                  role="dialog"
+                  aria-labelledby="exampleModalLabel{{loop.index}}"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5
+                          class="modal-title"
+                          id="exampleModalLabel{{loop.index}}"
+                        >
+                          Sentiment Calculation
+                        </h5>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <canvas
+                          id="myChart{{loop.index}}"
+                          width="100"
+                          height="100"
+                        ></canvas>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Calculation Chart for specific sentence -->
+                <script>
+                  var ctx{{loop.index}} = document.getElementById('myChart{{loop.index}}');
+                  const datachart{{loop.index}} = {
+                      labels: [
+                          'Polarity',
+                          'Subjectivity',
+                      ],
+                      datasets: [{
+                          axis: 'y',
+                          label: 'Sentence Sentiment',
+                          data: [
+                              {{sent.polarity}},
+                              {{sent.subjectivity}},
+                          ],
+                          backgroundColor: [
+                              'rgb(219, 112, 147)',
+                              'rgb(175, 238, 238)',
+                          ],
+                          hoverOffset: 2
+                      }]
+                  };
+
+                  const configdata{{loop.index}} = {
+                      type: 'bar',
+                      data: datachart{{loop.index}},
+                      options: {
+                          indexAxis: 'y',
+                      }
+                  };
+
+                  var myChartData{{loop.index}} = new Chart(ctx{{loop.index}}, configdata{{loop.index}});
+                </script>
+
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="content">
+  </div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-4 col-md-12">
-                <div class="white-box analytics-info">
-                    <h3 class="box-title">{{ sentimentClassifier.output }}</h3>
-                    <ul class="list-inline two-part d-flex align-items-center mb-0">
-                        <li>
-                            <div id="sparklinedash"><canvas width="67" height="30"
-                                    style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
-                            </div>
-                        </li>
-                        <li class="ms-auto"><span class="counter text-success">Compound Value: {{ sentimentClassifier.compoundValue }}</span></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="white-box analytics-info">
-                    <h3 class="box-title">Subjectivity</h3>
-                    <ul class="list-inline two-part d-flex align-items-center mb-0">
-                        <li>
-                            <div id="sparklinedash2"><canvas width="67" height="30"
-                                    style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
-                            </div>
-                        </li>
-                        <li class="ms-auto"><span class="counter text-purple">{{ sentimentClassifier.overallSubjectivity }}</span></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="white-box analytics-info">
-                    <h3 class="box-title">Polarity</h3>
-                    <ul class="list-inline two-part d-flex align-items-center mb-0">
-                        <li>
-                            <div id="sparklinedash3"><canvas width="67" height="30"
-                                    style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
-                            </div>
-                        </li>
-                        <li class="ms-auto"><span class="counter text-info">{{ sentimentClassifier.overallPolarity }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+  <!-- Like Buttons -->
+<a href="#" class="float">
+  <i class="fa fa-plus icon"></i>
+</a>
+<ul>
+  <li>
+    <a href="/discoverMore">
+      <div class="centreIcon" class="btnLoading">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-collection-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zM2 3a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11A.5.5 0 0 0 2 3zm2-2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7A.5.5 0 0 0 4 1z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/wordNetwork" class="twitterBtn">
+      <i class="fa fa-twitter icon"></i>
+    </a>
+  </li>
+  <li>
+    <a href="/textAnalysis" class="analysisBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-pencil-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/summary" class="btn-get-started scrollto sumBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-book-half icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <i class="fa fa-thumbs-up icon"></i>
+    </a>
+  </li>
+  <li>
+    <a href="/dashboard" class="dashboardBtn">
+      <i class="fa fa-backward icon"></i>
+    </a>
+  </li>
+</ul>
+<!-- End - Buttons -->
 
-        <div class="row">
-            <!-- Graph Representaion -->
-            <div class="col-xl-12">
-                <div class="card mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between "
-                        style="background-color: darkslategray">
-                        <h6 class="m-0 font-weight-bold text-primary text-white">Data Visualization</h6>
-                        <div class="dropdown no-arrow">
-                            <a class="dropdown-toggle text-white" href="#" role="button" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                    class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path
-                                        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                                </svg>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                aria-labelledby="dropdownMenuLink">
-                                <div class="dropdown-header">Dropdown Header:</div>
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Data Visualization -->
-                    <div class="card-body">
-                        <div class="row">
-                            <!-- Area Chart -->
-                            <div class="col-xl-7">
-                                <div class="card shadow mb-4">
-                                    <!-- Card Header - Dropdown -->
-                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
-                                        style="background-color: darkcyan">
-                                        <h6 class="m-0 font-weight-bold text-primary text-white">Overall Statistic</h6>
-                                    </div>
-                                    <!-- Card Body -->
-                                    <div class="card-body">
-                                        <div class="chart-area  pt-4 pb-2">
-                                            <canvas id="dataChart" width="80" height="27"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+<!-- Button Response -->
+<script src="../static/btnResponse.js"></script>
 
-                            <!-- Area Chart -->
-                            <div class="col-xl-5">
-                                <div class="card shadow mb-4">
-                                    <!-- Card Header - Dropdown -->
-                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
-                                        style="background-color: darkcyan">
-                                        <h6 class="m-0 font-weight-bold text-primary text-white">Sentiment Distribution
-                                        </h6>
-                                    </div>
-                                    <!-- Card Body -->
-                                    <div class="card-body">
-                                        <div class="chart-area  pt-4 pb-2">
-                                            <canvas id="SentimentChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Graph Representaion -->
-            <div class="col-xl-12">
-                <div class="card mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between "
-                        style="background-color: darkslategray">
-                        <h6 class="m-0 font-weight-bold text-primary text-white">Sentence Sentiment Trend</h6>
-                        <div class="dropdown no-arrow">
-                            <a class="dropdown-toggle text-white" href="#" role="button" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                    class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path
-                                        d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                                </svg>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                aria-labelledby="dropdownMenuLink">
-                                <div class="dropdown-header">Dropdown Header:</div>
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Data Visualization -->
-                    <div class="card-body">
-                        <div class="chart-area  pt-4 pb-2">
-                            <canvas id="DistributeChart"></canvas>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        var ctxData = document.getElementById('dataChart').getContext('2d');
-        const datachart = {
-            labels: [
-                'Overall Polarity',
-                'Overall Subjectivity',
-                'Compound Percentage',
+  <script>
+    var ctxData = document.getElementById('dataChart').getContext('2d');
+    const datachart = {
+        labels: [
+            'Overall Polarity',
+            'Overall Subjectivity',
+            'Compound Percentage',
+        ],
+        datasets: [{
+            axis: 'y',
+            label: 'Content Dataset',
+            data: [
+                {{sentimentClassifier.overallPolarity}},
+                {{sentimentClassifier.overallSubjectivity}},
+                {{sentimentClassifier.compoundPercent}},
             ],
-            datasets: [{
-                axis: 'y',
-                label: 'Content Dataset',
-                data: [
-                    {{sentimentClassifier.overallPolarity}},
-                    {{sentimentClassifier.overallSubjectivity}},
-                    {{sentimentClassifier.compoundPercent}},
-                ],
-                backgroundColor: [
-                    'rgb(219, 112, 147)',
-                    'rgb(175, 238, 238)',
-                    'rgb(211, 211, 211)',
-                ],
-                hoverOffset: 2
-            }]
-        };
-
-        const configdata = {
-            type: 'horizontalBar',
-            data: datachart,
-            options: {
-                indexAxis: 'y',
-            }
-        };
-        var myChartData = new Chart(ctxData, configdata);
-
-        var ctxSentiment = document.getElementById('SentimentChart').getContext('2d');
-        const dataSentiment = {
-            labels: [
-                "Postive",
-                "Netural",
-                "Negative"
+            backgroundColor: [
+                'rgb(219, 112, 147)',
+                'rgb(175, 238, 238)',
+                'rgb(211, 211, 211)',
             ],
-            datasets: [{
-                label: 'Sentiment Distribution',
-                data: [
-                    {{sentimentClassifier.positve}},
-                    {{sentimentClassifier.netural}},
-                    {{sentimentClassifier.negative}},
-                ],
-                backgroundColor: [
-                    'rgb(220, 20, 60)',
-                    'rgb(105, 105, 105)',
-                    'rgb(47, 79, 79)'
-                ],
-                hoverOffset: 3
-            }]
-        };
+            hoverOffset: 2
+        }]
+    };
 
-        const configSentiment = {
-            type: 'pie',
-            data: dataSentiment,
-        };
+    const configdata = {
+        type: 'horizontalBar',
+        data: datachart,
+        options: {
+            indexAxis: 'y',
+        }
+    };
+    var myChartData = new Chart(ctxData, configdata);
 
-        var myChartSentiment = new Chart(ctxSentiment, configSentiment);
-
-        var ctxDistribute = document.getElementById('DistributeChart').getContext('2d');
-        const dataDistribute = {
-            labels: [
-                {% for sent in sentimentClassifier.sentList %}
-                    "Sentence {{loop.index}}",
-                {% endfor %}
+    var ctxSubj = document.getElementById('subjChart').getContext('2d');
+    const subjchart = {
+        labels: [
+            'Subjective',
+            'Objective',
+        ],
+        datasets: [{
+            axis: 'y',
+            label: 'Content Dataset',
+            data: [
+                {% if sentimentClassifier.overallSubjectivity < 0.5 %}
+                    100 - (-({{sentimentClassifier.overallSubjectivity}} - 1)/1) * 100,
+                    (-({{sentimentClassifier.overallSubjectivity}} - 1)/1) * 100,
+                {% else %}
+                    {{sentimentClassifier.overallSubjectivity}} * 100,
+                    100 - ({{sentimentClassifier.overallSubjectivity}} * 100),
+                {% endif %}
             ],
-            datasets: [{
-                label: 'Polarity',
-                data: [
-                {% for sent in sentimentClassifier.sentList %}
-                    {{sent.polarity}},
-                {% endfor %}
-                ],
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
-                hoverOffset: 1
-            },
-            {
-                label: 'Subjectivity',
-                data: [
-                {% for sent in sentimentClassifier.sentList %}
-                    {{sent.subjectivity}},
-                {% endfor %}
-                ],
-                borderColor: 'rgb(192, 75, 192)',
-                tension: 0.1,
-                hoverOffset: 1
-            }]
-        };
+            backgroundColor: [
+                'rgb(255,140,0)',
+                'rgb(173, 216, 230)',
+            ],
+            hoverOffset: 2
+        }]
+    };
 
-        const configDistribute = {
-            type: 'line',
-            data: dataDistribute,
-        };
+    const configSubj = {  
+        type: 'doughnut',
+        data: subjchart,
+    };
 
-        var myChartSentiment = new Chart(ctxDistribute, configDistribute);
+    var myChartSubj = new Chart(ctxSubj, configSubj);
 
-    </script>
+    var ctxSentiment = document.getElementById('SentimentChart').getContext('2d');
+    const dataSentiment = {
+        labels: [
+            "Postive",
+            "Netural",
+            "Negative"
+        ],
+        datasets: [{
+            label: 'Sentiment Distribution',
+            data: [
+                {{sentimentClassifier.positve}},
+                {{sentimentClassifier.netural}},
+                {{sentimentClassifier.negative}},
+            ],
+            backgroundColor: [
+                'rgb(220, 20, 60)',
+                'rgb(105, 105, 105)',
+                'rgb(47, 79, 79)'
+            ],
+            hoverOffset: 3
+        }]
+    };
 
-    {% endblock %}
+    const configSentiment = {
+        type: 'pie',
+        data: dataSentiment,
+    };
+
+    var myChartSentiment = new Chart(ctxSentiment, configSentiment);
+
+    var ctxDistribute = document.getElementById('DistributeChart').getContext('2d');
+    const dataDistribute = {
+        labels: [
+            {% for sent in sentimentClassifier.sentList %}
+                "Sentence {{loop.index}}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Polarity',
+            data: [
+            {% for sent in sentimentClassifier.sentList %}
+                {{sent.polarity}},
+            {% endfor %}
+            ],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1,
+            hoverOffset: 1
+        },
+        {
+            label: 'Subjectivity',
+            data: [
+            {% for sent in sentimentClassifier.sentList %}
+                {{sent.subjectivity}},
+            {% endfor %}
+            ],
+            borderColor: 'rgb(192, 75, 192)',
+            tension: 0.1,
+            hoverOffset: 1
+        }]
+    };
+
+    const configDistribute = {
+        type: 'line',
+        data: dataDistribute,
+    };
+
+    var myChartSentiment = new Chart(ctxDistribute, configDistribute);
+
+    var ctxEmotion = document.getElementById('EmotionChart').getContext('2d');
+    const dataEmotion = {
+        labels: [
+            "Anger",
+            "Disgust",
+            "Fear",
+            "Joy",
+            "Neutral",
+            "Sadness",
+            "Shame",
+            "Surprise",
+        ],
+        datasets: [{
+            label: 'Emotion Distribution',
+            data: [
+        {{ highProbEmotion['Distribute']['anger'] }},
+        {{ highProbEmotion['Distribute']['disgust'] }},
+        {{ highProbEmotion['Distribute']['fear'] }},
+    {{ highProbEmotion['Distribute']['joy'] }},
+    {{ highProbEmotion['Distribute']['neutral'] }},
+    {{ highProbEmotion['Distribute']['sadness'] }},
+    {{ highProbEmotion['Distribute']['shame'] }},
+    {{ highProbEmotion['Distribute']['surprise'] }},
+            ],
+    backgroundColor: [
+        'rgb(255, 128, 0)',
+        'rgb(255, 255, 0)',
+        'rgb(128, 255, 0)',
+        'rgb(0, 255, 255)',
+        'rgb(0, 128, 255)',
+        'rgb(128, 0, 255)',
+        'rgb(255, 0, 255)',
+        'rgb(128, 128, 128)',
+    ],
+        hoverOffset: 3
+        }]
+    };
+
+    const configEmotion = {
+        type: 'pie',
+        data: dataEmotion,
+    };
+
+    var ctxEmotion = new Chart(ctxEmotion, configEmotion);
+  </script>
+
+  {% endblock %}
+
+  <!-- Table Property Editable, Searchable, Sortable-->
+  {% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $("#sentimentDisplay").DataTable();
+    });
+  </script>
+  {% endblock %}
+</div>
+

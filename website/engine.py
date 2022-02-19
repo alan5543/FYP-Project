@@ -1,6 +1,8 @@
 #----------------------------------------------------------------------------------------
 # ERROR HANDLING
 from flask import flash
+
+from website.summarizer import summaryReport
 from . import constants
 
 # Key word Extraction Unsupervisored Learning (TF*IDF)
@@ -220,6 +222,18 @@ def save_word_cloud(text, cwidth, cheight, darkcolorMode, img_filename):
     print("saved wc")
 
 
+def buildWordCloud(doc):
+    # Build a word cloud
+    print("Building the cloud ...")
+    word_cloud_height = 400
+    word_cloud_width = 800
+    word_cloud_color = True
+    word_cloud_filename = constants.DEFAULT_CLOUD_NAME
+    save_word_cloud(doc, word_cloud_width, word_cloud_height, word_cloud_color, word_cloud_filename)
+    word_cloud_path = get_word_cloud(word_cloud_filename)
+    return word_cloud_path
+
+
 class CleanCache:
 	'''
 	this class is responsible to clear any previous image files
@@ -309,27 +323,28 @@ def getWordCount(doc: STRING):
     return len(res)
 
 # Call for the function of summarizer
-def extractive_summarizer(doc: STRING, top_n=5):
+def extractive_summarizer(doc: STRING):
     try:
         stop_words = stopwords.words('english')
         summarize_text = []
-        
+
         # Read text and tokenize
         sentences =  preprocess_text(doc)
 
-        if(top_n > len(sentences)):
-            return constants.EXT_ERROR_HANDLE, getWordCount(constants.EXT_ERROR_HANDLE), getSentenceCount(constants.EXT_ERROR_HANDLE)
-        
         # Generate Similary Martix across sentences
         sentence_similarity_martix = similarity_matrix_construct(sentences, stop_words)
-        
+
         # Rank sentences in similarity martix
         sentence_similarity_graph = nx.from_numpy_array(sentence_similarity_martix)
         scores = nx.pagerank(sentence_similarity_graph)
-        
+
         # Sort the rank and pick top sentences
-        ranked_sentence = sorted(((scores[i],s) for i,s in enumerate(sentences)), reverse=True)    
+        ranked_sentence = sorted(((scores[i],s) for i,s in enumerate(sentences)), reverse=True)
+
+        # Define the top sentence extracted (take 50%)
+        top_n = round(len(sent_tokenize(doc)) * 0.5)
         print("TOP_N::::::::::::::::::" + str(top_n))
+
         for i in range(top_n):
             summarize_text.append(" ".join(ranked_sentence[i][1]))
         
@@ -337,45 +352,242 @@ def extractive_summarizer(doc: STRING, top_n=5):
         sum_text = " ".join(summarize_text)
         return sum_text, getWordCount(sum_text), getSentenceCount(sum_text)
     except:
-        flash(constants.DEFAULT_ERROR_MESSAGE)
+        return constants.DEFAULT_ERROR_MESSAGE, getWordCount(constants.DEFAULT_ERROR_MESSAGE), getSentenceCount(constants.DEFAULT_ERROR_MESSAGE)
 
 #----------------------------------------------------------------------------------------
 # Text Summarizer with model
-from transformers import pipeline, PegasusForConditionalGeneration, PegasusTokenizer
-import string
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-summarizer = pipeline("summarization")
+""" from transformers import pipeline, PegasusForConditionalGeneration, PegasusTokenizer
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+import spacy
+nlp = spacy.load('en_core_web_sm')
 
-def getAbstractiveSum(doc: STRING):
+def chunk_sent(doc):
+    print("chunking start ...")
+    nest = []
+    sents = ""
+    length = 0
+    tokens = nlp(doc)
+    sentences = [str(sent).strip() for sent in tokens.sents]
+    for sentence in sentences:
+        length += len(sentence)
+        if length < 1024:
+            sents = sents + sentence
+        else:
+            nest.append(sents)
+            sents = ""
+            length = 0
+    if sents:
+        nest.append(sents)
+    print("chuncking finished: " + str(len(nest)))
+
+    return nest
+    
+
+def getAbstractiveSum(chunk_sent):
     try:
-        MAX_LENGTH = 200
-        MIN_LENGTH = 80
+        summaries = []
+        index = 0
+        for chunk in chunk_sent:
+            index += 1
+            print("Processing Chunk " + str(index))
+            MAX_LENGTH = round(len(word_tokenize(chunk)) * 0.6)
+            MIN_LENGTH = round(len(word_tokenize(chunk)) * 0.2)
+            print("CHUNK: " + chunk)
+            print("MAX_LENGTH: " + str(MAX_LENGTH))
+            print("MIN_LENGTH: " + str(MIN_LENGTH))
+            summary = summarizer(chunk, max_length=MAX_LENGTH, min_length=MIN_LENGTH, do_sample=False)
+            summary_text = summary[0]['summary_text']
+            summaries.append(summary_text)
+        # combine chunking
+        full_summary_text = " ".join(summaries)
+        # return report
+        return full_summary_text, getWordCount(full_summary_text), getSentenceCount(full_summary_text)
 
-        # check whether the input length is larger than the min length or not
-        print("Stage 1")
-        check_string = doc
-        for elem in string.whitespace:
-            check_string = check_string.replace(elem, '')
-        print("Stage 2")
-        if len(check_string) < MIN_LENGTH:
-            return constants.ABS_ERROR_HANDLE, getWordCount(constants.ABS_ERROR_HANDLE), getSentenceCount(constants.ABS_ERROR_HANDLE)
-        print("Stage 3")
-        summary = summarizer(doc, max_length=MAX_LENGTH, min_length=MIN_LENGTH, do_sample=False)
-        summary_text = summary[0]['summary_text']
-        print("Stage 4")
-        return summary_text, getWordCount(summary_text), getSentenceCount(summary_text)
     except:
-        flash(constants.DEFAULT_ERROR_MESSAGE)
+        return constants.DEFAULT_ERROR_MESSAGE, getWordCount(constants.DEFAULT_ERROR_MESSAGE), getSentenceCount(constants.DEFAULT_ERROR_MESSAGE) """
+         
 
 
 #----------------------------------------------------------------------------------------
 # Core Sentence Extraction
-tokenizer = PegasusTokenizer.from_pretrained("google/pegasus-xsum")
+""" tokenizer = PegasusTokenizer.from_pretrained("google/pegasus-xsum")
 model = PegasusForConditionalGeneration.from_pretrained("google/pegasus-xsum")
 
 def getCoreSent(doc: STRING):
     tokens = tokenizer(doc, truncation=True, padding="longest", return_tensors="pt")
+    print("Starting Generating Core Sentence...")
     summary = model.generate(**tokens)
+    print("End Core Extraction...")
     decode_sum = summary[0]
     core_sent = tokenizer.decode(decode_sum)
-    return core_sent, getWordCount(core_sent)
+    return core_sent, getWordCount(core_sent) """
+
+#------------------------------------------------------------------------------------------
+# Name Recognition Breakdown
+
+def get_headers(obj: dict):
+    headers= [k for k in obj.keys()]
+    return headers
+
+def get_values(obj: dict):
+    values = [k  for  k in  obj.values()]
+    return values
+
+def get_couple_list(obj: dict):
+    headers = get_headers(obj)
+    values = get_values(obj)
+    res = []
+    pos = 0
+    for head in headers:
+        for value in values[pos]:
+            item = {}
+            item[head] = value
+            res.append(item)
+        pos += 1
+    return res
+
+
+#------------------------------------------------------------------------------------------
+# Generate Summary Report
+
+def generate_summary(title, doc):
+    # import structure
+    from .summarizer import summaryReport
+    try:
+        # count of the passage
+        print("calculating the count of article ...")
+        doc_word_num = getWordCount(doc)
+        doc_word_sent = getSentenceCount(doc)
+
+        # TF*IDF Key Point
+        print ("calculating the TF*IDF")
+        KEY_NUM = 6
+        tf_score = tf_score_process(doc)
+        idf_score = idf_score_process(doc)
+        tf_idf_score = calculate_TF_IDF(tf_score, idf_score)
+        top_keys = get_top_num(tf_idf_score, KEY_NUM)
+        top_keys_list = list(top_keys.items())
+        top_keys_mean_list = wordMeanExtracter(top_keys_list)
+
+        # Machine Learning Key Point Extraction
+        print("Find the keyword ...")
+        PHASE_NUM = 1
+        model_keys = keyword_model_process(doc, PHASE_NUM, KEY_NUM)
+        m_keys_list = wordMeanExtracter(model_keys)
+        model_keys_list = importancePercentageCalculate(m_keys_list, Phase=False)
+
+        # Machine Learning to Extract the Interesting Phase
+        print("find the ML keyword ...")
+        PHASE_NUM = 2
+        k_phase_list = keyword_model_diversity(doc, PHASE_NUM, KEY_NUM)
+        keys_phase_list = importancePercentageCalculate(k_phase_list, Phase=True)
+
+        # Build a word cloud
+        print("Building the cloud ...")
+        word_cloud_height = 400
+        word_cloud_width = 800
+        word_cloud_color = True
+        word_cloud_filename = constants.DEFAULT_CLOUD_NAME
+
+        save_word_cloud(doc, word_cloud_width, word_cloud_height, word_cloud_color, word_cloud_filename)
+        word_cloud_path = get_word_cloud(word_cloud_filename)
+
+        # Extractive Summary
+        print("Doing the extractive summarization ...")
+        (extract_sum, extract_sum_word, extract_sum_sent) = extractive_summarizer(doc)
+
+        # Abstractive Summary
+        print("Doing the abstractive Summary ..")
+        # chunking = chunk_sent(doc)
+        # (abstract_sum, abstract_sum_word, abstract_sum_sent) = getAbstractiveSum(chunking)
+        (abstract_sum, abstract_sum_word, abstract_sum_sent) = ("No Record", 2, 1)
+
+        # Core Sentence
+        print("Extracting the core sentence ...")
+        # (core_sent, core_word_count) = getCoreSent(doc)
+        (core_sent, core_word_count) = ("No Record", 2)
+
+        # generate struture
+        print("Generating the summary report ...")
+        res = summaryReport()
+        res.generateSummary(title, doc, top_keys_mean_list,model_keys_list, keys_phase_list, word_cloud_path, extract_sum, extract_sum_word, extract_sum_sent,
+        abstract_sum, abstract_sum_word, abstract_sum_sent, core_sent, core_word_count, doc_word_num, doc_word_sent)
+        
+        # store cache to dB
+        loadToSummaryCache(res)
+
+        return res.toJSON()
+
+    except Exception as err:
+        # res = summaryReport()
+        return err
+
+    
+def loadToSummaryCache(res: summaryReport):
+    print("Summary Cache Start ..")
+    from .models import summaryCache
+    from . import db
+    print("FINSIH IMPOR DB")
+    title = res.get_title()
+    doc = res.get_doc()
+    extractKeyWord = toJSON(res.get_extractKeyWord())
+    abstractKeyWord = toJSON(res.get_abstractKeyWord())
+    keyPhase = toJSON(res.get_keyPhase())
+    extractSum = res.get_extractSum()
+    extractSumWordCount = res.get_extractSumWordCount()
+    extractSumSentCount = res.get_extractSumSentCount()
+    abstractSum = res.get_abstractSum()
+    abstractSumWordCount = res.get_abstractSumWordCount()
+    abstractSumSentCount = res.get_abstractSumSentCount()
+    coreSent = res.get_coreSent()
+    coreSentWordCount = res.get_coreSentWordCount()
+    docWordCount = res.get_docWordCount()
+    docSentWordCount = res.get_docSentWordCount()
+    print("FINSIH INSERT DATA")
+    # Build the cache
+    cache = summaryCache(title=title,doc=doc,extractKeyWord=extractKeyWord,abstractKeyWord=abstractKeyWord, 
+    keyPhase=keyPhase,extractSum=extractSum, extractSumWordCount=extractSumWordCount,extractSumSentCount=extractSumSentCount,
+    abstractSum=abstractSum,abstractSumWordCount=abstractSumWordCount,abstractSumSentCount=abstractSumSentCount,
+    coreSent=coreSent,coreSentWordCount=coreSentWordCount,docWordCount=docWordCount,docSentWordCount=docSentWordCount)
+    print("FINISH BUILD THE CACHE")
+    print(type(cache))
+    print(cache.title)
+    if not cache:
+        print("The Cache Build is failed")
+    else:
+        print("Summary Cache start ..")
+        # load to dB
+        db.session.add(cache)
+        db.session.commit()
+        print("Summary Cache Success ..")
+
+
+def toJSON(self):
+    import json
+    return json.dumps(self, default=lambda o: o.__dict__, 
+        sort_keys=True, indent=4)
+
+def getAllKeys(doc):
+    # TF*IDF Key Point
+    print ("calculating the TF*IDF")
+    KEY_NUM = 6
+    tf_score = tf_score_process(doc)
+    idf_score = idf_score_process(doc)
+    tf_idf_score = calculate_TF_IDF(tf_score, idf_score)
+    top_keys = get_top_num(tf_idf_score, KEY_NUM)
+    top_keys_list = list(top_keys.items())
+    top_keys_mean_list = wordMeanExtracter(top_keys_list)
+    # Machine Learning Key Point Extraction
+    print("Find the keyword ...")
+    PHASE_NUM = 1
+    model_keys = keyword_model_process(doc, PHASE_NUM, KEY_NUM)
+    m_keys_list = wordMeanExtracter(model_keys)
+    model_keys_list = importancePercentageCalculate(m_keys_list, Phase=False)
+    # Machine Learning to Extract the Interesting Phase
+    print("find the ML keyword ...")
+    PHASE_NUM = 2
+    k_phase_list = keyword_model_diversity(doc, PHASE_NUM, KEY_NUM)
+    keys_phase_list = importancePercentageCalculate(k_phase_list, Phase=True)
+    # return the keys
+    return (top_keys_mean_list, model_keys_list, keys_phase_list)

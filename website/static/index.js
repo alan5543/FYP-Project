@@ -4,7 +4,7 @@ function deleteNote(recordId) {
       method: "POST",
       body: JSON.stringify({ recordId: recordId }),
     }).then((_res) => {
-      window.location.href = "/HKToday";
+      window.location.href = "/history";
     });
     console.log("Finish the deletion");
   }
@@ -24,3 +24,11 @@ function deleteNote(recordId) {
     });
     console.log("Finish resending message");
   }
+
+  $(function() {
+    $('#cardselector').change(function(){
+        console.log("Hello");
+        if($(this).val()=="All"){$('.nameCard').show(); return;}else{$('.nameCard').hide();}
+        $('.' + $(this).val()).show();
+    });
+});

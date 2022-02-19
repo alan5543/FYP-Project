@@ -1,0 +1,45 @@
+.divScroll {
+    width: 100%;
+    height: 58vh;
+    overflow: auto;
+    padding-top: 3vh;
+  }
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+  .select-container{
+      display: flex;
+      justify-content: center;
+  }
+
+  .cardMargin{
+      margin-bottom: 5vh;
+  }
+
+  .iconSize{
+      font-size: 3vw;
+  }
+
+  .centreBox{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }

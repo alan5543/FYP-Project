@@ -31,3 +31,22 @@ class ExploreNew(db.Model):
     publish = db.Column(db.String(50))#
     image = db.Column(db.String(1000))
     link = db.Column(db.String(1000))#
+
+# For Cache the Summary Report UX Design
+class summaryCache(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    doc = db.Column(db.String(100000))
+    extractKeyWord = db.Column(db.String(100000)) # need to JSONTIFY
+    abstractKeyWord = db.Column(db.String(100000)) # need to JSONTIFY
+    keyPhase = db.Column(db.String(100000)) # need to JSONTIFY
+    extractSum = db.Column(db.String(100000))
+    extractSumWordCount = db.Column(db.Integer)
+    extractSumSentCount = db.Column(db.Integer)
+    abstractSum = db.Column(db.String(100000))
+    abstractSumWordCount = db.Column(db.Integer)
+    abstractSumSentCount = db.Column(db.Integer)
+    coreSent = db.Column(db.String(2000))
+    coreSentWordCount = db.Column(db.Integer)
+    docWordCount = db.Column(db.Integer)
+    docSentWordCount = db.Column(db.Integer)

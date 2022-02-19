@@ -1,0 +1,94 @@
+
+.flex-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Lato:100&display=swap');
+
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.bcontainer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.center {
+  width: 100%;
+  height: 60px;
+}
+
+.supportbtn {
+  width: 180px;
+  height: 60px;
+  cursor: pointer;
+  background-color: #0b6cc7;
+  border: 1px solid #0b6cc7;
+  outline: none;
+  transition: 0.5s ease-in-out;
+  margin: 1rem;
+}
+
+
+.supportbtn:hover {
+  transition: 0.5s ease-in-out;
+  background: #11100F;
+  border: 1px solid #11100F;
+}
+
+.supportbtn:hover svg {
+  stroke-dashoffset: -480;
+}
+
+.supportbtn span {
+  color: white;
+  font-size: 18px;
+  font-weight: 100;
+}
+
+
+.nsupportbtn {
+    width: 180px;
+    height: 60px;
+    cursor: pointer;
+    background-color: #a32323;
+    border: 1px solid #a32323;
+    outline: none;
+    transition: 0.5s ease-in-out;
+    margin: 1rem;
+  }
+  
+  
+  .nsupportbtn:hover {
+    transition: 0.5s ease-in-out;
+    background: #11100F;
+    border: 1px solid #11100F;
+  }
+  
+  .nsupportbtn:hover svg {
+    stroke-dashoffset: -480;
+  }
+  
+  .nsupportbtn span {
+    color: white;
+    font-size: 18px;
+    font-weight: 100;
+  }
+  
+  .icon-padding{
+      margin-right: 1vw;
+  }

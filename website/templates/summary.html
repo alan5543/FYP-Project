@@ -6,6 +6,10 @@
 <link href="../static/css/summaryboard.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
+<!-- Like Btn -->
+<link href="..\static\css\sumLikeBtn\style.css" rel="stylesheet" />
+
+
 <!--Introduction Carousel-->
 <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -97,8 +101,8 @@
     </div>
     <div class="card-body">
         <blockquote class="blockquote mb-0">
-        <p>{{core_sent}}</p>
-        <footer class="blockquote-footer">The Count of Sentence is about <cite title="Source Title">{{core_word_count}} words</cite></footer>
+        <p>{{result["core_sent"]}}</p>
+        <footer class="blockquote-footer">The Count of Sentence is about <cite title="Source Title">{{result["core_word_count"]}} words</cite></footer>
         </blockquote>
     </div>
     </div>
@@ -128,15 +132,15 @@
     </ul>
     <div id="myTabContent" class="tab-content">
       <div id="extract" role="tabpanel" aria-labelledby="extract-tab" class="tab-pane fade px-4 py-5 show active">
-        <p class="text-muted">{{ extract_sum }}</p>
-        <p class="text-muted mb-0">The Sentence Count is {{ extract_sum_sent }} and The Word Count is {{ extract_sum_word }}.</p>
+        <p class="text-muted">{{ result["extract_sum"] }}</p>
+        <p class="text-muted mb-0">The Sentence Count is {{ result["extract_sum_sent"] }} and The Word Count is {{ result["extract_sum_word"] }}.</p>
         
         <button type="button" class="btn btn-secondary summary-compare-button btn-lg" data-toggle="modal" data-target="#modalRelatedContent2">Compare with Orginal</button>
       </div>
 
       <div id="abstract" role="tabpanel" aria-labelledby="abstract-tab" class="tab-pane fade px-4 py-5">
-        <p class="text-muted">{{ abstract_sum }}</p>
-        <p class="text-muted mb-0">The Sentence Count is {{ abstract_sum_sent }} and The Word Count is {{ abstract_sum_word }}.</p>
+        <p class="text-muted">{{ result["abstract_sum"] }}</p>
+        <p class="text-muted mb-0">The Sentence Count is {{ result["abstract_sum_sent"] }} and The Word Count is {{ result["abstract_sum_word"] }}.</p>
         
         <button type="button" class="btn btn-secondary summary-compare-button btn-lg" data-toggle="modal" data-target="#modalRelatedContent3">Compare with Original</button>
         </div>
@@ -169,16 +173,16 @@
             <h3><strong>Orginal Side</strong></h3>
             <h2>{{ title }}</h2>
             <p>{{ doc }}</p>
-            <p>The Word Number: {{ doc_word_num }}</p>
-            <p>The Sentence Number: {{ doc_word_sent }}</p>
+            <p>The Word Number: {{ result["doc_word_num"] }}</p>
+            <p>The Sentence Number: {{ result["doc_word_sent"] }}</p>
           </div>
 
           <div class="col-7 compare-element2">
             <h3><strong>Extractive Side</strong></h3>
             <h2>{{ title }}</h2>
-            <p>{{ extract_sum }}</p>
-            <p>The Word Number: {{ extract_sum_word }}</p>
-            <p>The Sentence Number: {{ extract_sum_sent }}</p>
+            <p>{{ result["extract_sum"] }}</p>
+            <p>The Word Number: {{ result["extract_sum_word"] }}</p>
+            <p>The Sentence Number: {{ result["extract_sum_sent"] }}</p>
             <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -213,16 +217,16 @@ aria-labelledby="myModalLabel" aria-hidden="true">
             <h3><strong>Orginal Side</strong></h3>
             <h2>{{ title }}</h2>
             <p>{{ doc }}</p>
-            <p>The Word Number: {{ doc_word_num }}</p>
-            <p>The Sentence Number: {{ doc_word_sent }}</p>
+            <p>The Word Number: {{ result["doc_word_num"] }}</p>
+            <p>The Sentence Number: {{ result["doc_word_sent"] }}</p>
           </div>
 
           <div class="col-7 compare-element2">
             <h3><strong>Abstractive Side</strong></h3>
             <h2>{{ title }}</h2>
-            <p>{{ abstract_sum }}</p>
-            <p>The Word Number: {{ abstract_sum_word }}</p>
-            <p>The Sentence Number: {{ abstract_sum_sent }}</p>
+            <p>{{ result["abstract_sum"] }}</p>
+            <p>The Word Number: {{ result["abstract_sum_word"] }}</p>
+            <p>The Sentence Number: {{ result["abstract_sum_sent"] }}</p>
             <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -294,7 +298,7 @@ aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="container">
             <h5 class="section-title h1">IDEA CARD</h5>
             <div class="row">
-                {% for item in top_keys_mean_list %}
+                {% for item in result["top_keys_mean_list"] %}
                 <div class="col-xs-12 col-sm-6 col-md-4 collapse.show multi-collapse1">
                     <div class="image-flip" >
                         <div class="mainflip flip-0">
@@ -350,7 +354,7 @@ aria-labelledby="myModalLabel" aria-hidden="true">
                 </div>
                 {% endfor %}
 
-                {% for item in model_keys_list %}
+                {% for item in result["model_keys_list"] %}
                 <div class="col-xs-12 col-sm-6 col-md-4 collapse multi-collapse2">
                     <div class="image-flip" >
                         <div class="mainflip flip-0">
@@ -406,7 +410,7 @@ aria-labelledby="myModalLabel" aria-hidden="true">
                 </div>
                 {% endfor %}
 
-                {% for item in keys_phase_list %}
+                {% for item in result["keys_phase_list"] %}
                 <div class="col-xs-12 col-sm-6 col-md-4 collapse multi-collapse3">
                     <div class="image-flip" >
                         <div class="mainflip flip-0">
@@ -467,13 +471,89 @@ aria-labelledby="myModalLabel" aria-hidden="true">
     </section>
 </div>
 
-<!--<div class="b-example-divider">How Importance?</div>
 
-<h5>How Importance?</h5>
-<div class="chart-container" style="position: relative; height:30vw; width:50vw; display: flex;">
-    <canvas id="myChart" width="300" height="200"></canvas>
-    <canvas id="myChart2" width="300" height="200"></canvas>
-</div> -->
+
+<!-- Like Buttons -->
+<a href="#" class="float">
+  <i class="fa fa-plus icon"></i>
+</a>
+<ul class="footer">
+  <li class="footer-btn">
+    <a href="/wordNetwork" class="twitterBtn footer-btn-link">
+      <i class="fa fa-twitter icon"></i>
+    </a>
+  </li>
+  <li class="footer-btn">
+    <a href="/discoverMore" class="footer-btn-link">
+      <div class="centreIcon" class="btnLoading">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-collection-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zM2 3a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11A.5.5 0 0 0 2 3zm2-2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7A.5.5 0 0 0 4 1z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li class="footer-btn">
+    <a href="/sentiment" class="emotionBtn footer-btn-link">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-emoji-laughing-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM7 6.5c0 .501-.164.396-.415.235C6.42 6.629 6.218 6.5 6 6.5c-.218 0-.42.13-.585.235C5.164 6.896 5 7 5 6.5 5 5.672 5.448 5 6 5s1 .672 1 1.5zm5.331 3a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zm-1.746-2.765C10.42 6.629 10.218 6.5 10 6.5c-.218 0-.42.13-.585.235C9.164 6.896 9 7 9 6.5c0-.828.448-1.5 1-1.5s1 .672 1 1.5c0 .501-.164.396-.415.235z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li class="footer-btn">
+    <a href="/textAnalysis" class="analysisBtn footer-btn-link">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-pencil-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li class="footer-btn">
+    <a href="#" class="footer-btn-link">
+      <i class="fa fa-thumbs-up icon"></i>
+    </a>
+  </li>
+  <li class="footer-btn">
+    <a href="/dashboard" class="footer-btn-link">
+      <i class="fa fa-backward icon"></i>
+    </a>
+  </li>
+</ul>
+<!-- End - Buttons -->
+
+
+<!-- Button Response -->
+<script src="../static/btnResponse.js"></script>
+
 
 <script type="text/javascript">
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -481,14 +561,14 @@ aria-labelledby="myModalLabel" aria-hidden="true">
     type: 'bar',
     data: {
         labels: [
-            {% for item in top_keys_mean_list %}
+            {% for item in result["top_keys_mean_list"] %}
             "{{ item.keyword }}",
             {% endfor %}
         ],
         datasets: [{
             label: '# Score of Key Word',
             data: [
-                {% for item in top_keys_mean_list %}
+                {% for item in result["top_keys_mean_list"] %}
                 {{ item.mark }},
                 {% endfor %}
             ],
@@ -524,14 +604,14 @@ aria-labelledby="myModalLabel" aria-hidden="true">
     var ctx2 = document.getElementById('myChart2').getContext('2d');
     const data2 = {
         labels: [
-            {% for item in model_keys_list %}
+            {% for item in result["model_keys_list"] %}
              "{{ item.keyword}}",
             {% endfor %}
         ],
         datasets: [{
             label: 'My First Dataset',
             data: [
-                {% for item in model_keys_list %}
+                {% for item in result["model_keys_list"] %}
                     {{ item.mark }},
                 {% endfor %}
             ],

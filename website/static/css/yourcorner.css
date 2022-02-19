@@ -30,3 +30,15 @@
     height: 70%;
     margin: 0 2vw 0 2vw;
 }
+
+.cardHeaderContentBlue{
+    color:#124265
+}
+
+.cardHeaderColorBlue{
+    background-color: #124265;
+}
+
+.borderBlue{
+    border-color: #124265;
+}

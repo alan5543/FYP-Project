@@ -1,0 +1,810 @@
+{% extends "base.html" %} {% block title %}Hashtag Detail{% endblock %} {% block
+content %}
+<link href="..\static\css\twitter\font-awesome.min.css" rel="stylesheet" />
+<link href="..\static\css\twitter\themify-icons.css" rel="stylesheet" />
+<link href="..\static\css\twitter\bootstrap.min.css" rel="stylesheet" />
+<link href="..\static\css\twitter\helper.css" rel="stylesheet" />
+<link href="..\static\css\twitter\style.css" rel="stylesheet" />
+
+<!-- Like Btn -->
+<link href="..\static\css\likeBtn\style.css" rel="stylesheet" />
+
+
+<div class="paddingTop">
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-title">
+          <h4>Tweets Cloud</h4>
+        </div>
+        <div class="card-body">
+          <img
+            src="../static/twitter/tweets.png"
+            alt="Word CLoud"
+            width="100%"
+            height="100%"
+            class="twitter-cloud"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-title">
+          <h4>Supportive Trend</h4>
+        </div>
+        <div class="card-body">
+          <canvas id="DistributeChart" width="250" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- /# column -->
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-title">
+          <h4>HotWords In Tweets</h4>
+        </div>
+        <div class="card-body">
+          <ul class="timeline">
+            {% for hotword in result["hotWords"] %}
+            <li>
+              <div class="timeline-badge primary">
+                <i class="fa fa-hashtag"></i>
+              </div>
+              <div class="timeline-panel timeline-boxHeight">
+                <div class="timeline-heading">
+                  <h5 class="timeline-title">{{ hotword }}</h5>
+                </div>
+                <div class="timeline-body">
+                  <p>{{loop.index}} HotWord</p>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-- /# card -->
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-title">
+          <div>
+            <h4>Comments in Tweets</h4>
+                            <div class="buttons">
+                  <span
+                    class="badge bg-white d-flex flex-row align-items-center"
+                  >
+                    <div class="dropdown">
+                      <button
+                        class="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        Filter Comments
+                      </button>
+                      <div
+                        class="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
+                      >
+                        <a class="dropdown-item" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">All Opinions</a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Support Opinons</a>
+                        <a class="dropdown-item" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Unsupport Opinons</a>
+                        <a class="dropdown-item" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">No Opinions</a>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+          </div>
+        </div>
+        <div class="card-body divScroll">
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-12" id="accordion">
+
+              <!-- All Comments -->
+              <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+
+                {% for tweet in result["tweets"] %}
+                <div class="card p-3 mt-2">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div class="user d-flex flex-row align-items-center">
+                      {% if tweet["Emotion"] == "anger" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/anger.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "disgust" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/disgust.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "fear" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/fear.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "joy" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/joy.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "neutral" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/neutral.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "sadness" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/sad.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "shame" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/shame.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "surprise" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/surprise.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% endif %}
+                      <span
+                        ><small class="font-weight-bold text-primary"
+                          >{{ tweet["Publisher"] }}</small
+                        >
+                        <small class="font-weight-bold"
+                          >{{ tweet["Tweets"] }}
+                        </small></span
+                      >
+                    </div>
+                    {% if tweet["Location"] == "Not Found" %}
+                    <small>{{ tweet["Release"] }}</small>
+                    {% else %}
+                    <small
+                      >{{ tweet["Release"] }}, {{ tweet["Location"] }}</small
+                    >
+                    {% endif %}
+                  </div>
+                  <div
+                    class="action d-flex justify-content-between mt-2 align-items-center"
+                  >
+                    <div class="reply px-4">
+                      <a href="{{ tweet['Url'] }}" target="_blank"><small>View in Twitter</small></a>
+                    </div>
+                    <div class="icons align-items-center">
+                      {% if tweet['opinion'] == "Support" %}
+                      <h5 class="text-primary">
+                        Support
+                        <i
+                          class="fa fa-check-circle-o check-icon text-primary"
+                        ></i>
+                      </h5>
+                      {% elif tweet['opinion'] == "Unsupport" %}
+                      <h5 class="text-warning">
+                        Unsupport
+                        <i
+                          class="fa fa-times-circle-o check-icon text-warning"
+                        ></i>
+                      </h5>
+                      {% else %}
+                      <h5 class="text-secondary">
+                        No Opinion
+                        <i class="fa fa-flag check-icon text-secondary"></i>
+                      </h5>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- Support Comments -->
+              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                {% for tweet in support_comments %}
+                <div class="card p-3 mt-2">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div class="user d-flex flex-row align-items-center">
+                      {% if tweet["Emotion"] == "anger" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/anger.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "disgust" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/disgust.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "fear" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/fear.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "joy" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/joy.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "neutral" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/neutral.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "sadness" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/sad.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "shame" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/shame.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "surprise" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/surprise.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% endif %}
+                      <span
+                        ><small class="font-weight-bold text-primary"
+                          >{{ tweet["Publisher"] }}</small
+                        >
+                        <small class="font-weight-bold"
+                          >{{ tweet["Tweets"] }}
+                        </small></span
+                      >
+                    </div>
+                    {% if tweet["Location"] == "Not Found" %}
+                    <small>{{ tweet["Release"] }}</small>
+                    {% else %}
+                    <small
+                      >{{ tweet["Release"] }}, {{ tweet["Location"] }}</small
+                    >
+                    {% endif %}
+                  </div>
+                  <div
+                    class="action d-flex justify-content-between mt-2 align-items-center"
+                  >
+                    <div class="reply px-4">
+                      <a href="{{ tweet['Url'] }}" target="_blank"><small>View in Twitter</small></a>
+                    </div>
+                    <div class="icons align-items-center">
+                      {% if tweet['opinion'] == "Support" %}
+                      <h5 class="text-primary">
+                        Support
+                        <i
+                          class="fa fa-check-circle-o check-icon text-primary"
+                        ></i>
+                      </h5>
+                      {% elif tweet['opinion'] == "Unsupport" %}
+                      <h5 class="text-warning">
+                        Unsupport
+                        <i
+                          class="fa fa-times-circle-o check-icon text-warning"
+                        ></i>
+                      </h5>
+                      {% else %}
+                      <h5 class="text-secondary">
+                        No Opinion
+                        <i class="fa fa-flag check-icon text-secondary"></i>
+                      </h5>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- Unsupport Comments -->
+              <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                {% for tweet in unsupport_comments %}
+                <div class="card p-3 mt-2">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div class="user d-flex flex-row align-items-center">
+                      {% if tweet["Emotion"] == "anger" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/anger.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "disgust" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/disgust.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "fear" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/fear.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "joy" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/joy.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "neutral" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/neutral.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "sadness" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/sad.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "shame" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/shame.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "surprise" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/surprise.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% endif %}
+                      <span
+                        ><small class="font-weight-bold text-primary"
+                          >{{ tweet["Publisher"] }}</small
+                        >
+                        <small class="font-weight-bold"
+                          >{{ tweet["Tweets"] }}
+                        </small></span
+                      >
+                    </div>
+                    {% if tweet["Location"] == "Not Found" %}
+                    <small>{{ tweet["Release"] }}</small>
+                    {% else %}
+                    <small
+                      >{{ tweet["Release"] }}, {{ tweet["Location"] }}</small
+                    >
+                    {% endif %}
+                  </div>
+                  <div
+                    class="action d-flex justify-content-between mt-2 align-items-center"
+                  >
+                    <div class="reply px-4">
+                      <a href="{{ tweet['Url'] }}" target="_blank"><small>View in Twitter</small></a>
+                    </div>
+                    <div class="icons align-items-center">
+                      {% if tweet['opinion'] == "Support" %}
+                      <h5 class="text-primary">
+                        Support
+                        <i
+                          class="fa fa-check-circle-o check-icon text-primary"
+                        ></i>
+                      </h5>
+                      {% elif tweet['opinion'] == "Unsupport" %}
+                      <h5 class="text-warning">
+                        Unsupport
+                        <i
+                          class="fa fa-times-circle-o check-icon text-warning"
+                        ></i>
+                      </h5>
+                      {% else %}
+                      <h5 class="text-secondary">
+                        No Opinion
+                        <i class="fa fa-flag check-icon text-secondary"></i>
+                      </h5>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- No Opinons Comments -->
+              <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                {% for tweet in no_opinons_comments %}
+                <div class="card p-3 mt-2">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div class="user d-flex flex-row align-items-center">
+                      {% if tweet["Emotion"] == "anger" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/anger.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "disgust" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/disgust.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "fear" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/fear.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "joy" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/joy.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "neutral" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/neutral.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "sadness" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/sad.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "shame" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/shame.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% elif tweet["Emotion"] == "surprise" %}
+                      <img
+                        src="{{url_for('static', filename='emoji/surprise.png')}}"
+                        width="30"
+                        class="user-img rounded-circle mr-2"
+                      />
+                      {% endif %}
+                      <span
+                        ><small class="font-weight-bold text-primary"
+                          >{{ tweet["Publisher"] }}</small
+                        >
+                        <small class="font-weight-bold"
+                          >{{ tweet["Tweets"] }}
+                        </small></span
+                      >
+                    </div>
+                    {% if tweet["Location"] == "Not Found" %}
+                    <small>{{ tweet["Release"] }}</small>
+                    {% else %}
+                    <small
+                      >{{ tweet["Release"] }}, {{ tweet["Location"] }}</small
+                    >
+                    {% endif %}
+                  </div>
+                  <div
+                    class="action d-flex justify-content-between mt-2 align-items-center"
+                  >
+                    <div class="reply px-4">
+                      <a href="{{ tweet['Url'] }}" target="_blank"><small>View in Twitter</small></a>
+                    </div>
+                    <div class="icons align-items-center">
+                      {% if tweet['opinion'] == "Support" %}
+                      <h5 class="text-primary">
+                        Support
+                        <i
+                          class="fa fa-check-circle-o check-icon text-primary"
+                        ></i>
+                      </h5>
+                      {% elif tweet['opinion'] == "Unsupport" %}
+                      <h5 class="text-warning">
+                        Unsupport
+                        <i
+                          class="fa fa-times-circle-o check-icon text-warning"
+                        ></i>
+                      </h5>
+                      {% else %}
+                      <h5 class="text-secondary">
+                        No Opinion
+                        <i class="fa fa-flag check-icon text-secondary"></i>
+                      </h5>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /# card -->
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-title centre">
+          <h4>Trends in World</h4>
+        </div>
+        <div class="card-body">
+          <div id="world-datamap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <script>
+      var ctxDistribute = document.getElementById('DistributeChart').getContext('2d');
+        const dataDistribute = {
+            labels: [
+                {% for time in result["timeline"] %}
+                    "{{time["Release"]}}",
+                {% endfor %}
+            ],
+            datasets: [{
+                label: 'Supportive Trend',
+                data: [
+                {% for time in result["timeline"] %}
+                    {{time["Polarity"]}},
+                {% endfor %}
+                ],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1,
+                hoverOffset: 1
+            }]
+        };
+
+        const configDistribute = {
+            type: 'line',
+            data: dataDistribute,
+                options: {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    }
+                }]
+            }
+        },
+        };
+
+        var myChartSentiment = new Chart(ctxDistribute, configDistribute);
+    </script>
+  </div>
+</div>
+
+
+
+<!-- If in dashboard, show the like btn -->
+{% if not  InputNow %}
+<!-- Like Buttons -->
+<a href="#" class="float">
+  <i class="fa fa-plus icon"></i>
+</a>
+<ul>
+  <li>
+    <a href="/discoverMore">
+      <div class="centreIcon" class="btnLoading">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-collection-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zM2 3a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11A.5.5 0 0 0 2 3zm2-2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7A.5.5 0 0 0 4 1z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/sentiment" class="emotionBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-emoji-laughing-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM7 6.5c0 .501-.164.396-.415.235C6.42 6.629 6.218 6.5 6 6.5c-.218 0-.42.13-.585.235C5.164 6.896 5 7 5 6.5 5 5.672 5.448 5 6 5s1 .672 1 1.5zm5.331 3a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zm-1.746-2.765C10.42 6.629 10.218 6.5 10 6.5c-.218 0-.42.13-.585.235C9.164 6.896 9 7 9 6.5c0-.828.448-1.5 1-1.5s1 .672 1 1.5c0 .501-.164.396-.415.235z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/textAnalysis" class="analysisBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-pencil-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/summary" class="btn-get-started scrollto sumBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-book-half icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <i class="fa fa-thumbs-up icon"></i>
+    </a>
+  </li>
+  <li>
+    <a href="/wordNetwork" class="dashboardBtn">
+      <i class="fa fa-backward icon"></i>
+    </a>
+  </li>
+</ul>
+<!-- End - Buttons -->
+{% endif %}
+
+
+<!-- jquery vendor -->
+<script src="../static/assets/jquery.min.js"></script>
+<script src="../static/assets/jquery.nanoscroller.min.js"></script>
+
+<!--  Datamap -->
+<script src="../static/assets/datamap/d3.min.js"></script>
+<script src="../static/assets/datamap/topojson.js"></script>
+<script src="../static/assets/datamap/datamaps.world.min.js"></script>
+
+
+<script>
+( function ( $ ) {
+	"use strict";
+
+	var map = new Datamap( {
+		scope: 'world',
+		element: document.getElementById( 'world-datamap' ),
+		responsive: true,
+		geographyConfig: {
+			popupOnHover: false,
+			highlightOnHover: false,
+			borderColor: 'rgba(0,123,255,0.5)',
+			borderWidth: 1,
+			highlightBorderWidth: 3,
+			highlightFillColor: 'rgba(0,123,255,0.5)',
+			highlightBorderColor: 'rgba(255,255,255,0.1)',
+			borderWidth: 1,
+		},
+		bubblesConfig: {
+			popupTemplate: function ( geography, data ) {
+				return '<div class="datamap-sales-hover-tooltip">' + data.country + '<span class="m-l-5"></span>' + data.sold + '</div>'
+			},
+			borderWidth: 1,
+			highlightBorderWidth: 3,
+			highlightFillColor: 'rgba(0,123,255,0.5)',
+			highlightBorderColor: 'rgba(255,255,255,0.1)',
+			fillOpacity: 0.75
+		},
+		fills: {
+			'Visited': '#f5f5f5',
+			'neato': 'rgba(0,123,255,0.15)',
+			'white': 'rgba(0,123,255,0.15)',
+			defaultFill: 'rgba(0,123,255,0.75)',
+		}
+	} );
+
+
+	map.bubbles( [
+    {% for country in countryList %}
+    {
+			centered: '{{country.code}}',
+			fillKey: 'red',
+			radius: 5,
+			sold: '({{country.count}} tickets)  Support: {{country.support}}, Unsupport: {{country.unsupport}}',
+			country: '{{country.country}}'
+     },
+     {% endfor %}
+    ] )
+
+
+	window.addEventListener( 'resize', function ( event ) {
+		map.resize();
+	} );
+
+} )( jQuery );
+
+</script>
+
+{% endblock %}
+
+
+		{
+			centered: 'SAU',
+			fillKey: 'white',
+			radius: 5,
+			sold: '$900',
+			country: 'Saudia Arabia'
+     },
+		{
+			centered: 'RUS',
+			fillKey: 'white',
+			radius: 5,
+			sold: ' Support 20% \n Unsupport 80%',
+			country: 'Russia'
+     },
+		{
+			centered: 'CAN',
+			fillKey: 'white',
+			radius: 5,
+			sold: '$1000',
+			country: 'Canada'
+     },
+		{
+			centered: 'IND',
+			fillKey: 'white',
+			radius: 5,
+			sold: '$50',
+			country: 'India'
+     },
+		{
+			centered: 'AUS',
+			fillKey: 'white',
+			radius: 5,
+			sold: '$700',
+			country: 'Australia'
+     },
+		{
+			centered: 'BGD',
+			fillKey: 'white',
+			radius: 5,
+			sold: '$1500',
+			country: 'Bangladesh'
+     }

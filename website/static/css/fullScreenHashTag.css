@@ -1,0 +1,89 @@
+.carousel-item {
+    height: 100vh;
+    background: #212121;
+  }
+  
+  .carousel-control-next,
+  .carousel-control-prev {
+    width: 8% !important;
+  }
+  
+  .carousel-item.active,
+  .carousel-item-left,
+  .carousel-item-right {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .carousel-item h1 {
+      color: #fff;
+      font-size: 72px;
+      padding: 0 10%;
+   }
+
+
+.statContainer {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+.statContainer span {
+    display: block;
+}
+.banner {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 8px;
+    margin-bottom: 20px;
+    position: relative;
+    animation: animateText 3s 1;
+    background: #212121;
+}
+
+.banner-info {
+    font-size: 30px;
+    color: skyblue;
+}
+
+.banner-twitter{
+    color: skyblue;
+    font-size: 10rem;
+}
+
+.twitter-cloud{
+    width: 52rem;
+    height: 37rem;
+}
+
+.padding-narrow{
+    padding: 0 5rem 0 5rem;
+}
+
+@keyframes animateText {
+    0% {
+        color: black;
+        margin-bottom: -40px;
+    }
+
+    30% {
+        letter-spacing: 25px;
+        margin-bottom: -40px;
+    }
+
+    85% {
+        letter-spacing: 8px;
+        margin-bottom: -40px;
+    }
+}
+
+.moreInfo{
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    background: skyblue;
+    border:transparent;
+}

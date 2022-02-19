@@ -1,0 +1,85 @@
+
+ .float {
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color: #0C9;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+	z-index:1000;
+	animation: bot-to-top 2s ease-out;
+}
+/*
+ * Submenu - Buttons
+ */
+ul {
+	position: fixed;
+	right: 40px;
+	padding-bottom: 10px;
+	bottom: 80px;
+	z-index: 100;
+}
+ul li {
+	list-style: none;
+	margin-bottom: 10px;
+}
+ul li a {
+  width: 60px;
+	height: 60px;
+	background-color: #F33;
+	color: #FFF;
+	border-radius: 50px;
+	text-align: center;
+	box-shadow: 2px 2px 3px #999;
+	display: block;
+}
+/* Hidden Buttons */
+a.float + ul {
+  visibility: hidden;
+}
+/* Visible Buttons */
+a.float:hover + ul {
+  visibility: visible;
+  animation: scale-in 0.5s;
+}
+ul:hover {
+	visibility: visible !important;
+}
+/* Center icons */
+a i.icon {
+	font-size: 24px;
+	margin-top: 18px;
+}
+/*
+ * Animations
+ */
+a.float i{
+	animation: rotate-in 0.5s;
+}
+a.float:hover > i{
+	animation: rotate-out 0.5s;
+}
+@keyframes bot-to-top {
+    0%   {bottom: -60px}
+    50%  {bottom: 40px}
+}
+@keyframes scale-in {
+    from {transform: scale(0);opacity: 0;}
+    to {transform: scale(1);opacity: 1;}
+}
+@keyframes rotate-in {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+@keyframes rotate-out {
+    from {transform: rotate(360deg);}
+    to {transform: rotate(0deg);}
+}
+
+.centreIcon{
+    padding-top: 2vh;
+}

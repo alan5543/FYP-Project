@@ -2,159 +2,249 @@
 {% block title %}Word Network{% endblock %}
 
 {% block content %}
-<br>
-<br>
-<br>
-<h1>Word Network</h1>
 
-<h1>{{title}}</h1>
+<!-- Custom Design -->
+<link href="../static/css/sentiment.css" rel="stylesheet" />
+<link href="../static/css/global.css" rel="stylesheet" />
 
-<h1>{{doc}}</h1>
+<!-- Like Btn -->
+<link href="..\static\css\likeBtn\style.css" rel="stylesheet" />
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newsReader">Launch
-    modal</button>
-  <!-- News Fast View Modal -->
-  <div class="modal fade bd-example-modal-xl" id="newsReader" tabindex="-1" role="dialog" aria-labelledby="newsReader"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-lg-5">
-              <!--Carousel Wrapper-->
-              <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails"
-                data-ride="carousel">
-                <!--Slides-->
-                <div class="carousel-inner" role="listbox">
-                  <div class="carousel-item active">
-                    <img class="d-block w-100"
-                      src="../static/defaultImages/user_input_news.png"
-                      alt="News Image">
-                  </div>
+<div class="container-fluid" id="wrapper">
+
+
+      <div class="jumbotron bg-secondary text-white jumbotron-fluid slogon-container banner">
+          <div class="container">
+              <h1 class="display-4">#HashTag in Your News <i class="fa fa-twitter" aria-hidden="true"></i></h1>
+              <p class="lead">We have found different hashtags to you. You can click and view how other people react to this topic</p>
+          </div>
+          <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">How to use</a>
+          <a type="button" class="btn btn-light text-dark" data-toggle="modal" data-target="#exampleModalCenter">Create Your Own HashTag</a>
+      </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">How To Use</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-4">
+                <div class="list-group" id="list-tab" role="tablist">
+                  <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Step 1</a>
+                  <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Step 2</a>
+                  <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Step 3</a>
+                  <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Step 4</a>
                 </div>
               </div>
-              <!--/.Carousel Wrapper-->
+              <div class="col-8">
+                <div class="tab-content" id="nav-tabContent">
+                  <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">This platform is for you to know other people reaction in the selected topic. We will find other options in Twitter. Help you know whether any people support your point of view.</div>
+                  <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">We have found different hashtag inside your news article. After click your interested topic, the plaform will ask you the options whether you support or not support this topic.</div>
+                  <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">The platform will analysis other opinions in the Big Data from Twitter API and find out how many people support you. They may be like-minded people with you.</div>
+                  <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">If you think the hashtag is not so accurate, you may click and create your own hashtag. Let's find any people having same mind with you in the world!</div>
+                </div>
+              </div>
             </div>
-            <div class="col-lg-7">
-              <h2 class="h2-responsive product-name">
-                <strong>News Title</strong>
-              </h2>
-              <h6 class="h4-responsive">
-                <strong>News Publisher</strong>
-              </h6>
-
-              <!--Reader-->
-              <div class="accordion md-accordion" id="newsAccordion" role="tablist" aria-multiselectable="true">
-                <!-- News Detail -->
-                <div class="card">
-                  <!-- Card header -->
-                  <div class="card-header" role="tab" id="newsDetailHead">
-                    <a data-toggle="collapse" data-parent="#newsAccordion" href="#newsDetail" aria-expanded="true"
-                      aria-controls="newsDetail">
-                      <h5 class="mb-0">
-                        News Detail 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
-                          <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5v-11zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5H12z"/>
-                          <path d="M2 3h10v2H2V3zm0 3h4v3H2V6zm0 4h4v1H2v-1zm0 2h4v1H2v-1zm5-6h2v1H7V6zm3 0h2v1h-2V6zM7 8h2v1H7V8zm3 0h2v1h-2V8zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1z"/>
-                        </svg>
-                      </h5>
-                    </a>
-                  </div>
-                  
-                  <!-- Card body -->
-                  <div id="newsDetail" class="collapse show" role="tabpanel" aria-labelledby="newsDetailHead"
-                    data-parent="#newsAccordion">
-                    <div class="card-body">
-                      <ul>
-                        <li>News Date</li>
-                        <li>News Publisher</li>
-                        <li>News ID</li>
-                      </ul>                      
-                    </div>
-                  </div>
-                </div>
-                <!-- News Detail -->
-
-                <!-- News Quick Sum -->
-                <div class="card">
-                  <!-- Card header -->
-                  <div class="card-header" role="tab" id="newsSumHead">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#newsAccordion" href="#newsSum"
-                      aria-expanded="false" aria-controls="newsSum">
-                      <h5 class="mb-0">
-                        News Quick Summary
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-card-text" viewBox="0 0 16 16">
-                          <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
-                          <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
-                        </svg>
-                      </h5>
-                    </a>
-                  </div>
-
-                  <!-- Card body -->
-                  <div id="newsSum" class="collapse" role="tabpanel" aria-labelledby="newsSumHead"
-                    data-parent="#newsAccordion">
-                    <div class="card-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                      squid. 3
-                      wolf moon officia aute,
-                      non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                    </div>
-                  </div>
-
-                </div>
-                <!-- News Quick Sum -->
-
-                <!-- News Article -->
-                <div class="card">
-                  <!-- Card header -->
-                  <div class="card-header" role="tab" id="newsArticleHead">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#newsAccordion" href="#newsArticle"
-                      aria-expanded="false" aria-controls="newsArticle">
-                      <h5 class="mb-0">
-                        News Article
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-layout-text-sidebar-reverse" viewBox="0 0 16 16">
-                          <path d="M12.5 3a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5zm0 3a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5zm.5 3.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5zm-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5z"/>
-                          <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2zM4 1v14H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h2zm1 0h9a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5V1z"/>
-                        </svg>
-                      </h5>
-                    </a>
-                  </div>
-
-                  <!-- Card body -->
-                  <div id="newsArticle" class="collapse" role="tabpanel" aria-labelledby="newsArticleHead"
-                    data-parent="#newsAccordion">
-                    <div class="card-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                      squid. 3
-                      wolf moon officia aute,
-                      non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                    </div>
-                  </div>
-                </div>
-                <!-- News Article -->
-
-              </div>
-              <!-- Reader -->
-
-
-              <!-- Controller -->
-              <div class="card-body">
-                <div class="text-center">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Browse</button>
-                  <button class="btn btn-primary">Read Here
-                    <i class="fas fa-cart-plus ml-2" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </div>
-              <!-- /. Controller -->
-            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
+
+      <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h4 class="modal-title text-center text-white">Create Your Own #HashTag</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form method='post' action={{ url_for('views.createHashTag') }}>
+            <div class="modal-body">
+              <div class="input-group mb-3 input-box">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">#</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" name='hashTag'>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" >Explore HashTag</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+      <div class="container">
+        <div class="row">
+            {% for hash in hashtag %}
+            <div class="col-lg-3 col-sm-6">
+            <form method='post' action={{ url_for('reports.question', hashtag=hash, directHashtag=directHashtag) }}>
+                {% set randomNum = range(1, 5) | random %}
+                {% if randomNum == 1 %}
+                  
+                      <div class="card-box red-bg">
+                          <div class="inner">
+                              <h3> #{{hash}} </h3>
+                          </div>
+                          <div class="icon">
+                              <i class="fa fa-hashtag" aria-hidden="true"></i>
+                          </div>
+                          <button class="card-box-footer noBorderWord" type="submit">Explore <i class="fa fa-arrow-circle-right"></i></button>
+                      </div>
+
+                {% elif randomNum == 2 %}
+
+                      <div class="card-box green-bg">
+                          <div class="inner">
+                              <h3> #{{hash}} </h3>
+                          </div>
+                          <div class="icon">
+                              <i class="fa fa-hashtag" aria-hidden="true"></i>
+                          </div>
+                          <button class="card-box-footer noBorderWord" type="submit">Explore <i class="fa fa-arrow-circle-right"></i></button>
+                      </div>
+
+                {% elif randomNum == 3 %}
+
+                      <div class="card-box blue-bg">
+                          <div class="inner">
+                              <h3> #{{hash}} </h3>
+                          </div>
+                          <div class="icon">
+                              <i class="fa fa-hashtag" aria-hidden="true"></i>
+                          </div>
+                          <button class="card-box-footer noBorderWord" type="submit">Explore <i class="fa fa-arrow-circle-right"></i></button>
+                      </div>
+
+                {% else %}
+
+                      <div class="card-box black-bg">
+                          <div class="inner">
+                              <h3> #{{hash}} </h3>
+                          </div>
+                          <div class="icon">
+                              <i class="fa fa-hashtag" aria-hidden="true"></i>
+                          </div>
+                          <button class="card-box-footer noBorderWord" type="submit">Explore <i class="fa fa-arrow-circle-right"></i></button>
+                      </div>
+                  
+                {% endif %}
+                </div>
+              </form>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Like Buttons -->
+<a href="#" class="float">
+  <i class="fa fa-plus icon"></i>
+</a>
+<ul>
+  <li>
+    <a href="/discoverMore">
+      <div class="centreIcon" class="btnLoading">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-collection-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zM2 3a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11A.5.5 0 0 0 2 3zm2-2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7A.5.5 0 0 0 4 1z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/sentiment" class="emotionBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-emoji-laughing-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM7 6.5c0 .501-.164.396-.415.235C6.42 6.629 6.218 6.5 6 6.5c-.218 0-.42.13-.585.235C5.164 6.896 5 7 5 6.5 5 5.672 5.448 5 6 5s1 .672 1 1.5zm5.331 3a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zm-1.746-2.765C10.42 6.629 10.218 6.5 10 6.5c-.218 0-.42.13-.585.235C9.164 6.896 9 7 9 6.5c0-.828.448-1.5 1-1.5s1 .672 1 1.5c0 .501-.164.396-.415.235z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/textAnalysis" class="analysisBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-pencil-fill icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/summary" class="btn-get-started scrollto sumBtn">
+      <div class="centreIcon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          fill="currentColor"
+          class="bi bi-book-half icon"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"
+          />
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      <i class="fa fa-thumbs-up icon"></i>
+    </a>
+  </li>
+  <li>
+    <a href="/dashboard" class="dashboardBtn">
+      <i class="fa fa-backward icon"></i>
+    </a>
+  </li>
+</ul>
+<!-- End - Buttons -->
+
+
+<!-- Button Response -->
+<script src="../static/btnResponse.js"></script>
 
 {% endblock %}

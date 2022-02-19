@@ -1,4 +1,5 @@
 from nltk import text
+from sqlalchemy import true
 from werkzeug.wrappers import request
 from flask import Blueprint, render_template, request, flash, jsonify, redirect,url_for
 from website import constants
@@ -28,8 +29,17 @@ from newspaper import Article
 views = Blueprint('views', __name__)
 
 @views.route('/')
-@login_required
 def home():
+    if current_user.is_authenticated:
+        # Authenticated: Go To Landing Page
+        return render_template("homePage.html", boolean = True , user=current_user, InputNow=True)
+    else:
+        # Not Authenticated: Go To Start Page
+        return render_template("startPage.html", boolean = True , user=current_user, InputNow=True)
+
+@views.route('/userInput')
+@login_required
+def userInput():
     return render_template("extraction.html", boolean = True , user=current_user, InputNow=True)
 
 @views.route('/analyzeText', methods=['GET', 'POST'])
@@ -50,10 +60,17 @@ def analyzeText():
             flash(constants.INPUT_TEXT_ERROR, category='error')
             return render_template('extraction.html', boolean = True, user=current_user, InputNow=True)
     
-    # add the news article and title to the database
-    new_article = Record(data=newstext, title=newstitle, user_id=current_user.id)
-    db.session.add(new_article)
-    db.session.commit()
+
+    # create a temp to check whether the news is stored already
+    previous_news = Record.query.filter_by(title=newstitle).first()
+
+    if not previous_news:
+        # add the news article and title to the database
+        new_article = Record(data=newstext, title=newstitle, user_id=current_user.id)
+        db.session.add(new_article)
+        db.session.commit()
+    
+
     flash(constants.INPUT_SUCCESS, category='success')
     return redirect(url_for('reports.newReport', title=newstitle, doc=newstext))
     #return render_template('extraction.html', boolean = True, user=current_user, newstext=newstext, newstitle=newstitle)
@@ -103,10 +120,15 @@ def analyzeFile():
                 # delete back the temp file
                 os.remove(os.path.join(app.config['UPLOAD_FOLDER'], full_filename))
 
-                # add the news article and title to the database
-                new_article = Record(data=newstext, title=newstitle, user_id=current_user.id)
-                db.session.add(new_article)
-                db.session.commit()
+                # create a temp to check whether the news is stored already
+                previous_news = Record.query.filter_by(title=newstitle).first()
+
+                if not previous_news:
+                    # add the news article and title to the database
+                    new_article = Record(data=newstext, title=newstitle, user_id=current_user.id)
+                    db.session.add(new_article)
+                    db.session.commit()
+
 
                 # route the passage to the website
                 flash(constants.INPUT_SUCCESS, category='success')
@@ -143,10 +165,15 @@ def analyzeUrl():
             if article.title == "" or article.title == None:
                 newstitle = constants.URL_NO_TITLE
 
-             # add the news article and title to the Record database
-            new_article = Record(data=article.text, title=newstitle, user_id=current_user.id)
-            db.session.add(new_article)
-            db.session.commit()
+            # create a temp to check whether the news is stored already
+            previous_news = Record.query.filter_by(title=newstitle).first()
+
+            if not previous_news:
+                # add the news article and title to the Record database
+                new_article = Record(data=article.text, title=newstitle, user_id=current_user.id)
+                db.session.add(new_article)
+                db.session.commit()
+
 
             # add the news element to the News database
             from . import news
@@ -172,8 +199,28 @@ def analyzeUrl():
 @login_required
 def explore():
     # for getting the exploreNews newlist
-    from .news import newlist
-    return render_template("explore.html", boolean = True , user=current_user, newlist=newlist, InputNow=True)
+    # from .news import newlist
+    from .news import get_news_from_db
+    newlist = get_news_from_db()
+    topic = news_label(constants.TOPIC_EXPLORE)
+    return render_template("explore.html", boolean = True , user=current_user, newlist=newlist, InputNow=True, topic=topic)
+
+
+@views.route('/exploreTopic')
+@login_required
+def exploreTopic():
+    try:
+        topic = request.args.get('title')
+        label = news_label(topic)
+        # search the news
+        from .news import get_news
+        newlist = get_news(topic)
+        return render_template("explore.html", boolean = True , user=current_user, newlist=newlist, InputNow=True, topic=label)
+    except:
+        # for getting the exploreNews newlist
+        flash(constants.TOPIC_ERROR, category='error')
+        return redirect(url_for('views.explore'))
+
 
 @views.route('/exploreSubmit', methods=['GET', 'POST'])
 @login_required
@@ -195,15 +242,61 @@ def exploreSubmit():
             flash(constants.NO_EXPLORE_TEXT, category='error')
             return redirect(url_for('views.explore'))
 
-        # a thread to the database storage for record
-        new_article = Record(data=newText, title=newTitle, user_id=current_user.id)
-        db.session.add(new_article)
-        db.session.commit()
+        # create a temp to check whether the news is stored already
+        previous_news = Record.query.filter_by(title=newTitle).first()
+        
+        if not previous_news:
+            # a thread to the database storage for record
+            new_article = Record(data=newText, title=newTitle, user_id=current_user.id)
+
+            db.session.add(new_article)
+            db.session.commit()
+
 
         # pass parameters to the report dashboard for processing
         return redirect(url_for('reports.newReport', title=newTitle, doc=newText))
     # nothing extracted go back the URL
     return redirect(url_for('views.explore'))
+
+
+@views.route('/createHashTag', methods=['GET', 'POST'])
+@login_required
+def createHashTag():
+    if request.method == 'POST':
+        # extract the news title and text
+        hashTag = request.form.get('hashTag')
+        print("GET THE HASHTAG: " + hashTag)
+        # Error Handling
+        if hashTag == "":
+            flash(constants.NO_EXPLORE_TITLE, category='error')
+            return redirect(url_for('reports.wordNetwork'))
+        # route to result page
+        print("Going to question page ...")
+        return redirect(url_for('reports.question', hashtag=hashTag, directHashtag=False))
+
+
+
+@views.route('/createInputHashTag', methods=['GET', 'POST'])
+@login_required
+def createInputHashTag():
+    if request.method == 'POST':
+        # extract the news title and text
+        hashTag = request.form.get('hashTag')
+        print("GET THE HASHTAG: " + hashTag)
+        # Error Handling
+        if hashTag != "":
+            # route to result page
+            print("Going to question page ...")
+            return redirect(url_for('reports.question', hashtag=hashTag, directHashtag=True))
+        else:
+            flash(constants.NO_EXPLORE_TITLE, category='error')
+            return redirect(url_for("views.inputHashtag"))
+
+
+@views.route('/inputHashtag')
+@login_required
+def inputHashtag():
+    return render_template("inputHashtag.html", boolean = True , user=current_user, InputNow=True)
 
 @views.route('/yourCorner')
 @login_required
@@ -230,7 +323,7 @@ def discuss():
 def hktoday():
     return render_template("hktoday.html", boolean = True , user=current_user, InputNow=True)
 
-@views.route('/AboutUs')
+@views.route('/aboutUs')
 def aboutus():
     return render_template("aboutUs.html", boolean = True , user=current_user, InputNow=True)
 
@@ -261,3 +354,24 @@ def read_note():
         
     else:
         return jsonify({})
+
+
+def news_label(topic):
+    if topic == constants.TOPIC_WORLD:
+        return constants.TOPIC_LABEL_WORLD
+    elif topic == constants.TOPIC_HK:
+        return constants.TOPIC_LABEL_HK
+    elif topic == constants.TOPIC_BUSINESS:
+        return constants.TOPIC_LABEL_BUSINESS
+    elif topic == constants.TOPIC_TECH:
+        return constants.TOPIC_LABEL_TECH
+    elif topic == constants.TOPIC_ENTERTAIN:
+        return constants.TOPIC_LABEL_ENTERTAIN
+    elif topic == constants.TOPIC_SCIENCE:
+        return constants.TOPIC_LABEL_SCIENCE
+    elif topic == constants.TOPIC_SPORTS:
+        return constants.TOPIC_LABEL_SPORTS
+    elif topic == constants.TOPIC_HEALTH:
+        return constants.TOPIC_LABEL_HEALTH
+    else:
+        return constants.TOPIC_LABEL_EXPLORE

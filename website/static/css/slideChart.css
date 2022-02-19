@@ -1,0 +1,56 @@
+.bg-custom{
+    background-image: linear-gradient(#54a0ff, #2e86de);
+    border-top-left-radius: 50% 20%;
+    border-top-right-radius: 50% 20%;
+    width: 80%;
+    height: 80%;
+    background: skyblue;
+}
+
+.col-md-3{
+    padding-right:8px;
+    padding-left: 8px;
+}
+
+.bg-bottom{
+    background-color: #0097e6;
+}
+
+.headerInfo{
+    font-weight:700;
+    font-size:30px;
+    letter-spacing: 2px;
+    padding-top: 4vh;
+}
+
+@media(max-width: 768px){
+    .col-md-3{
+    text-align:center;
+    }
+    h3{
+    font-size: 40px;
+    }
+    .input-group {
+    margin-top:  1rem!important;
+    }
+    .pt-60{
+    padding-top: 30px;
+    }
+    }
+
+.fullSide{
+    width: 90%;
+    height: 90%;
+}
+
+
+.datamap-sales-hover-tooltip {
+    background: #545454;
+    font-family: 'Roboto', sans-serif;
+    padding: 5px 10px;
+    color: #ffffff;
+    font-weight: 400;
+    font-size: 12px;
+    text-transform: capitalize;
+    border-radius: 3px;
+  }

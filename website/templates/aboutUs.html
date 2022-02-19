@@ -7,8 +7,20 @@ content %}
   href="{{url_for('static', filename='css/aboutUs.css')}}"
 />
 
+<!-- preLoader css -->
+<link href="..\static\css\preLoader.css" rel="stylesheet" type="text/css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="../static/preloader.js"></script>
 
-<div class="why-us">
+
+<!-- Like Btn -->
+<link href="..\static\css\likeBtn\style.css" rel="stylesheet" />
+
+<div class="loader-wrapper">
+    <span class="loader"><span class="loader-inner"></span></span>
+</div>
+
+<div class="why-us contentContainer">
   <div class="container">
     <div class="row">
       <div class="col-md-8 offset-md-2">
@@ -93,5 +105,33 @@ content %}
   </div>
 </div>
 <!-- End Why Us Section -->
+
+
+<!-- Like Buttons -->
+<a href="#" class="float">
+  <i class="fa fa-plus icon"></i>
+</a>
+<ul>
+  <li>
+    <a href="/logout">
+      <div class="centreIcon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-box-arrow-left logo-white" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
+          <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+        </svg>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a href="/">
+          <div class="centreIcon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-skip-backward-fill logo-white" viewBox="0 0 16 16">
+              <path d="M.5 3.5A.5.5 0 0 0 0 4v8a.5.5 0 0 0 1 0V8.753l6.267 3.636c.54.313 1.233-.066 1.233-.697v-2.94l6.267 3.636c.54.314 1.233-.065 1.233-.696V4.308c0-.63-.693-1.01-1.233-.696L8.5 7.248v-2.94c0-.63-.692-1.01-1.233-.696L1 7.248V4a.5.5 0 0 0-.5-.5z"/>
+            </svg>
+        </div>
+    </a>
+  </li>
+</ul>
+<!-- End - Buttons -->
 
 {% endblock %} 

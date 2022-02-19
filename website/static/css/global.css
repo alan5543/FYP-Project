@@ -1,0 +1,76 @@
+.banner{
+    padding-top: 15vh;
+}
+
+.red-bg{
+    background-color: #F16A70;
+}
+
+.green-bg{
+    background-color: #B1D877;
+}
+
+.blue-bg{
+    background-color: #8CDCDA;
+}
+
+.black-bg{
+    background-color: #4D4D4D;
+}
+
+.text-center{
+    text-align: center;
+    display: block;
+    background-color: cadetblue;
+}
+
+.centerText{
+    text-align: center;
+    display: block;
+}
+
+.input-box{
+    padding: 0 8vw 0 8vw;
+}
+
+.noBorderWord{
+    border: lightslategrey;
+}
+
+.flexBox{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hashtag-inbox{
+    height: 3.5rem;
+}
+
+/* .hashtag-info{
+    padding: 1rem 12rem 1rem 12rem;
+} */
+
+.spanCentre{
+    text-align: center;
+}
+
+.cardHeaderContentBlue{
+    color:#124265
+}
+
+.cardHeaderColorBlue{
+    background-color: #124265;
+}
+
+.borderBlue{
+    border-color: #124265;
+}
+
+.borderText{
+    font-weight: bold;
+}
+
+.logo-white{
+    color: white;
+}

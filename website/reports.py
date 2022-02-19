@@ -1,9 +1,14 @@
 from flask import Blueprint, render_template, request, flash, jsonify, redirect,url_for
 from flask_login import login_required, current_user
 from nltk import text
+import json
+
+from sqlalchemy import false, true
+
 
 from website import constants
 from . import engine
+import requests
 
 reports = Blueprint('reports', __name__)
 
@@ -46,61 +51,67 @@ def dashboard():
 @reports.route('/summary')
 @login_required
 def summary():
-    # extract the processing article
-    title = Result._get_title()
-    doc = Result._get_doc()
-    doc_word_num = engine.getWordCount(doc)
-    doc_word_sent = engine.getSentenceCount(doc)
+    try: 
+        # extract the processing article
+        title = Result._get_title()
+        doc = Result._get_doc()
 
-    # extract the news image from database
-    from .models import ExploreNew
-    foundNews = ExploreNew.query.filter_by(title=title).first()
-    newImage = foundNews.image if foundNews else constants.DEFAULT_INPUT_IMAGE
-    print("NEW IMAGE: -------- " + newImage)
+        # extract the news image from database
+        print("building news image ...")
+        from .models import ExploreNew
+        foundNews = ExploreNew.query.filter_by(title=title).first()
+        newImage = foundNews.image if foundNews else constants.DEFAULT_INPUT_IMAGE
 
-    # TF*IDF Key Point
-    KEY_NUM = 6
-    tf_score = engine.tf_score_process(doc)
-    idf_score = engine.idf_score_process(doc)
-    tf_idf_score = engine.calculate_TF_IDF(tf_score, idf_score)
-    top_keys = engine.get_top_num(tf_idf_score, KEY_NUM)
-    top_keys_list = list(top_keys.items())
-    top_keys_mean_list = engine.wordMeanExtracter(top_keys_list)
+        # check whether the summary is in cache
+        print("Finding Summary Cache ...")
+        from .models import summaryCache
+        previous_summary = summaryCache.query.filter_by(title=title).first()
 
-    # Machine Learning Key Point Extraction
-    PHASE_NUM = 1
-    model_keys = engine.keyword_model_process(doc, PHASE_NUM, KEY_NUM)
-    m_keys_list = engine.wordMeanExtracter(model_keys)
-    model_keys_list = engine.importancePercentageCalculate(m_keys_list, Phase=False)
+        print("Finishing Finding Cache")
+        if not previous_summary:
+            print("Not Found Summary Cache ...")
+            # get the summary API
+            res = requests.post('http://127.0.0.1:8001/api/get_summarization', json={"title": title, "doc": doc})
+            if res.ok:
+                result = res.json()
+                return render_template("summary.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc, newImage=newImage, result=result) 
+            else:
+                flash(constants.INPUT_TEXT_ERROR, category='error')
+                return redirect(url_for('reports.newReport', title=title, doc=doc))
+        else:
+            print("Found Summary Cache ...")
+            # get the summary from cache
+            cache = previous_summary
+            # some parameters load from json to list
+            extractKeyWord = json.loads(cache.extractKeyWord)
+            abstractKeyWord = json.loads(cache.abstractKeyWord)
+            keyPhase = json.loads(cache.keyPhase)
 
-    # Machine Learning to Extract the Interesting Phase
-    PHASE_NUM = 2
-    k_phase_list = engine.keyword_model_diversity(doc, PHASE_NUM, KEY_NUM)
-    keys_phase_list = engine.importancePercentageCalculate(k_phase_list, Phase=True)
+            # import summary report
+            from .summarizer import summaryReport
+            # get the wordCloud directly
+            from .engine import buildWordCloud
+            cloud = buildWordCloud(doc)
+            # generate summary report
+            res = summaryReport()
+            res.generateSummary(title, doc, extractKeyWord, abstractKeyWord, keyPhase, cloud, cache.extractSum, 
+            cache.extractSumWordCount, cache.extractSumSentCount, cache.abstractSum, cache.abstractSumWordCount, cache.abstractSumSentCount,
+            cache.coreSent, cache.coreSentWordCount, cache.docWordCount, cache.docSentWordCount)
+            # return to frontend
+            result = res.__dict__
+            print("-------")
+            return render_template("summary.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc, newImage=newImage, result=result)
 
-    # Build a word cloud
-    word_cloud_height = 400
-    word_cloud_width = 800
-    word_cloud_color = True
-    word_cloud_filename = constants.DEFAULT_CLOUD_NAME
+    except Exception as error:
+        flash(error, category='error')
+        return redirect(url_for('reports.newReport', title=title, doc=doc))
 
-    engine.save_word_cloud(doc, word_cloud_width, word_cloud_height, word_cloud_color, word_cloud_filename)
-    word_cloud_path = engine.get_word_cloud(word_cloud_filename)
 
-    # Extractive Summary
-    print("HERE1")
-    EXTRACT_NUM = 4
-    (extract_sum, extract_sum_word, extract_sum_sent) = engine.extractive_summarizer(doc, EXTRACT_NUM)
-    print("HERE2")
-    # Abstractive Summary
-    (abstract_sum, abstract_sum_word, abstract_sum_sent) = engine.getAbstractiveSum(doc)
-    print("HERE3")
-    # Core Sentence
-    (core_sent, core_word_count) = engine.getCoreSent(doc)
+def toJSON(res):
+    return json.dumps(res, default=lambda o: o.__dict__, 
+        sort_keys=True, indent=4)
 
-    return render_template("summary.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc, top_keys_mean_list=top_keys_mean_list,model_keys_list=model_keys_list, keys_phase_list=keys_phase_list, newImage=newImage,
-    word_cloud_path=word_cloud_path, extract_sum=extract_sum, extract_sum_word=extract_sum_word, extract_sum_sent=extract_sum_sent, abstract_sum=abstract_sum, abstract_sum_word=abstract_sum_word, abstract_sum_sent=abstract_sum_sent,
-    core_sent=core_sent, core_word_count=core_word_count, doc_word_num=doc_word_num, doc_word_sent=doc_word_sent)
+    
 
 @reports.route('/sentiment')
 @login_required
@@ -108,17 +119,38 @@ def sentiment():
     title = Result._get_title()
     doc = Result._get_doc()
     from . import sentiment
+
+    # predict the sentiment
     sentimentClassifier = sentiment.sentimentClassifier(doc)
-    return render_template("sentiment.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc,sentimentClassifier=sentimentClassifier)
+    # predict the emotion
+    res = requests.post('http://127.0.0.1:8001/api/get_emotion', json={"news": [doc]})
+    if res.ok:
+        result = res.json()
+        highProbEmotion = result["HighProba"]
+        lowProbEmotion = result["lowProba"]
+        return render_template("sentiment.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc,sentimentClassifier=sentimentClassifier, highProbEmotion=highProbEmotion, lowProbEmotion=lowProbEmotion)
+    else:
+        flash(constants.INPUT_TEXT_ERROR, category='error')
+        return redirect(url_for('reports.newReport', title=title, doc=doc))
+
 
 @reports.route('/discoverMore')
 @login_required
 def discoverMore():
     title = Result._get_title()
     doc = Result._get_doc()
-    return render_template("nameEntity.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc)
+    res = requests.post('http://127.0.0.1:8001/api/get_name_entity', json={"news": doc})
+    if res.ok:
+        result = res.json()
+        htmlLabel = result["html"]
+        nameEntity = result["nameEntity"]
+        nameHeaders = engine.get_headers(nameEntity)
+        return render_template("nameEntity.html", boolean = True, user=current_user, htmlLabel=htmlLabel, InputNow=False, nameEntity=nameEntity, nameHeaders=nameHeaders)
+    else:
+        flash(constants.INPUT_TEXT_ERROR, category='error')
+        return redirect(url_for('reports.newReport', title=title, doc=doc))
 
-import threading
+
 
 @reports.route('/textAnalysis')
 @login_required
@@ -147,17 +179,6 @@ def textAnalysis():
     longestSentLength = max(textEngine.sentTokens, key=len)
     sentPercent = (int(textEngine.sentAvg)/len(longestSentLength))*100
 
-    #def tableforming():
-     #   print("running")
-       # textEngine.build_word_token_list()
-      #  textEngine.pos_counter()
-       # return render_template("textAnalysis.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc, textEngine=textEngine,
-       # fleshPercent=fleshPercent, gfogPercent=gfogPercent, smogPercent=smogPercent, uniquewordPercent=uniquewordPercent, sentPercent=sentPercent)
-
-    #print("Thread build")
-    #threading.Thread(target=tableforming).start()
-    #print("Thread End")
-
     # after text analysis, build a word list for table
     word_token_list = textEngine.build_word_token_list()
     sent_token_list = textEngine.build_sent_token_list()
@@ -178,16 +199,146 @@ def textAnalysis():
     word_token_list=word_token_list, pos_counter=pos_counter, sent_token_list=sent_token_list, content_word_num=content_word_num, function_word_num=function_word_num,
     unique_words=unique_words)
 
+
 @reports.route('/modelling')
 @login_required
 def modelling():
     title = Result._get_title()
     doc = Result._get_doc()
-    return render_template("modelling.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc)
+    return render_template("modelling.html" , boolean = True , user=current_user, InputNow=False, title=title, doc=doc)
+
 
 @reports.route('/wordNetwork')
 @login_required
 def wordNetwork():
     title = Result._get_title()
     doc = Result._get_doc()
-    return render_template("wordNetwork.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc)
+    # get the hashtags
+    res = requests.post('http://127.0.0.1:8001/api/get_hashtag', json={"title": title, "doc": doc})
+    if res.ok:
+        result = res.json()
+        hashtag = result["hashtag"]
+        return render_template("wordNetwork.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc, hashtag=hashtag)
+    else:
+        flash(constants.INPUT_TEXT_ERROR, category='error')
+        return redirect(url_for('reports.newReport', title=title, doc=doc))
+
+
+@reports.route('/question', methods=['GET', 'POST'])
+@login_required
+def question():
+    print("Going to Question Page ...")
+    title = Result._get_title()
+    doc = Result._get_doc()
+
+    print("Posting to Question Page ...")
+    hashtag = request.args.get('hashtag')
+    
+    directHashtag = request.args.get('directHashtag')
+    print("Direct Hashtag: " + directHashtag)
+
+    if directHashtag == 'True':
+        print("Go to Custom Hastag ...")
+        return render_template("questionUI.html" , boolean = True , user=current_user, InputNow=True, hashtag=hashtag, title=title)
+    else:
+        print("Go to Dashboard Hastag ...")
+        return render_template("questionUI.html" , boolean = True , user=current_user, InputNow=False, hashtag=hashtag, title=title)
+
+
+# support
+@reports.route('/supportHashtagInfo', methods=['GET', 'POST'])
+@login_required
+def supportHashtagInfo():
+    hashTag = request.args.get('hashTag')
+    inputStatus = request.args.get('InputNow')
+    InputNow = get_input_status(inputStatus)
+    # display
+    print("HashTag: " + hashTag)
+    print("Input Status: " + inputStatus)
+    print("Input Boolean: " + str(InputNow))
+    # search the hashtags
+    res = requests.post('http://127.0.0.1:8001/api/get_tweets', json={"keyword": hashTag})
+    if res.ok:
+        result = res.json()
+        tweets = result["tweets"]
+        hotWords = result["hotWords"]
+        tweets_num = result["tweets_num"]
+        opinon = result["opinon"]
+        timeline = result["timeline"]
+        return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=True, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result)
+    else:
+        title = Result._get_title()
+        doc = Result._get_doc()
+        flash(constants.INPUT_TEXT_ERROR, category='error')
+        return redirect(url_for('reports.newReport', title=title, doc=doc))
+
+
+# not support
+@reports.route('/notSupportHashtagInfo', methods=['GET', 'POST'])
+@login_required
+def notSupportHashtagInfo():
+    hashTag = request.args.get('hashTag')
+    inputStatus = request.args.get('InputNow')
+    InputNow = get_input_status(inputStatus)
+    # display
+    print("HashTag: " + hashTag)
+    print("Input Status: " + inputStatus)
+    print("Input Boolean: " + str(InputNow))
+    # search the hashtags
+    res = requests.post('http://127.0.0.1:8001/api/get_tweets', json={"keyword": hashTag})
+    if res.ok:
+        result = res.json()
+        tweets = result["tweets"]
+        hotWords = result["hotWords"]
+        tweets_num = result["tweets_num"]
+        opinon = result["opinon"]
+        timeline = result["timeline"]
+
+        return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=False, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result)
+    else:
+        title = Result._get_title()
+        doc = Result._get_doc()
+        flash(constants.INPUT_TEXT_ERROR, category='error')
+        return redirect(url_for('reports.newReport', title=title, doc=doc))
+
+# detail hashtag
+@reports.route('/detailHashTag', methods=['GET', 'POST'])
+@login_required
+def detailHashTag():
+    try:
+        res = request.args.get('res')
+        res = res.replace("\n", " ")
+
+        inputStatus = request.args.get('InputNow')
+        InputNow = get_input_status(inputStatus)
+        # print(res)
+        # convert to dict
+        import ast
+        result = ast.literal_eval(res)
+
+        # get all comments
+        all_comments = result["tweets"]
+        # print("All Comments: " + str(len(all_comments)))
+        support_comments = [comment for comment in all_comments if comment["opinion"] == "Support"]
+        unsupport_comments = [comment for comment in all_comments if comment["opinion"] == "Unsupport"]
+        no_opinons_comments = [comment for comment in all_comments if comment["opinion"] == "No Opinion"]
+
+        # get countries list
+        from .map import getCountryList
+        distintCountries = result["countries"]
+        countryList = getCountryList(all_comments, distintCountries)
+
+        return render_template("detailHashTag.html" , boolean = True , user=current_user, InputNow=InputNow, result=result, support_comments=support_comments, unsupport_comments=unsupport_comments, no_opinons_comments=no_opinons_comments, countryList=countryList)
+        #return render_template("detailHashTag.html" , boolean = True , user=current_user, InputNow=False, support=False, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline)
+    except:
+        title = Result._get_title()
+        doc = Result._get_doc()
+        flash(constants.INPUT_TEXT_ERROR, category='error')
+        return redirect(url_for('reports.newReport', title=title, doc=doc))
+
+# get input status
+def get_input_status(inputStatus):
+    if inputStatus == 'True':
+        return True
+    else:
+        return False

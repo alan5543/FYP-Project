@@ -52,7 +52,7 @@ def login():
 def logout():
     # for log out and route back to the login page
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('views.home'))
 
 @auth.route('/sign', methods=['GET', 'POST'])
 def sign():
