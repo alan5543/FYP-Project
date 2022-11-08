@@ -16,8 +16,6 @@ from werkzeug.utils import secure_filename
 import os
 ALLOWED_EXTENSIONS = set(['txt'])
 
-# for the news explore api
-from pygooglenews import GoogleNews
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -37,10 +35,12 @@ def home():
         # Not Authenticated: Go To Start Page
         return render_template("startPage.html", boolean = True , user=current_user, InputNow=True)
 
+
 @views.route('/userInput')
 @login_required
 def userInput():
     return render_template("extraction.html", boolean = True , user=current_user, InputNow=True)
+
 
 @views.route('/analyzeText', methods=['GET', 'POST'])
 @login_required

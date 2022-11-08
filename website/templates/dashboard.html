@@ -15,6 +15,15 @@ content %}
 
 <!-- Like Btn -->
 <link href="..\static\css\likeBtn\style.css" rel="stylesheet" />
+<link href="..\static\css\likeBtn\infoBox.css" rel="stylesheet" />
+
+<!-- quick review -->
+<link href="..\static\css\quickReview\style.css" rel="stylesheet" />
+
+
+<!-- For Search Key -->
+<script src="../static/textAnalysis.js"></script>
+
 
 <link
   rel="stylesheet"
@@ -44,6 +53,78 @@ content %}
     <div class="row justify-content-center">
       <div class="col-xl-7 col-lg-9 text-center">
         <h1>Your Dashboard</h1>
+        <button type="button" class="btn btn-primary launch blue-bg" data-toggle="modal" data-target="#staticBackdrop"> <i class="fa fa-info"></i> Fast Read
+        </button>
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-right"> <i class="fa fa-close close" data-dismiss="modal"></i> </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="text-center mt-2">
+                                  <img src="{{newImage}}" alt="Trulli" class="responsive">
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-4 col-xl-6">
+                                            <div class="card red-bg order-card">
+                                                <div class="card-block">
+                                                    <h6 class="m-b-20 text-white">Sentiment</h6>
+                                                    <h2 class="text-right text-white"><i class="fa fa-pencil f-left" aria-hidden="true"></i><span>
+                                                      {% if sentimentClr.overallPolarity < -0.66 %}
+                                                      Strongly Negative
+                                                      {% elif sentimentClr.overallPolarity < -0.33 %}
+                                                      Moderately Negative
+                                                      {% elif sentimentClr.overallPolarity < -0.05 %}
+                                                      Slightly Negative
+                                                      {% elif sentimentClr.overallPolarity < 0.05 %}
+                                                      Moderately Netural
+                                                      {% elif sentimentClr.overallPolarity < 0.33 %}
+                                                      Slightly Positive
+                                                      {% elif sentimentClr.overallPolarity < 0.66 %}
+                                                      Moderately Postive
+                                                      {% elif sentimentClr.overallPolarity < 1 %}
+                                                      Strongly Negative
+                                                      {% endif %}
+                                                    </span></h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4 col-xl-6">
+                                            <div class="card blue-bg order-card text-space">
+                                                <div class="card-block">
+                                                    <h6 class="m-b-20 text-white">Author Emotion</h6>
+                                                    <h2 class="text-right text-white"><i class="fa fa-smile-o f-left" aria-hidden="true"></i><span>{{highProbEmotion['Emotion']}}</span></h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                  </div>
+                                </div>
+                                <div class="wrapper">
+                                  <input type="text" id="search-key" placeholder="Enter text to search..">
+                                  <button type="button" class="btn btn-secondary btn-sm" id="search-btn" onclick="search()">Search</button>
+                                  <button class="btn btn-primary blue-bg" id="toggleBtn">Show Entity<i class="fa fa-cloud-download"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mt-4"> <span class="intro-1">{{title}}</span>
+                                    <div class="mt-2 overflow-auto scroll-space">
+                                      <span class="intro-2" id="paragraph">
+                                        {{ quick_review | markdown}}
+                                      </span>
+                                      <span class="intro-2" id="paragraph-highlight">
+                                        {{ highlight_text | markdown}}
+                                      </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <h2>
           We provide the following NLP service for you to easy learn from your
           news article. Have Fun in your reading.
@@ -223,18 +304,23 @@ content %}
   </div>
 </div>
 
+
+
 <!-- Like Buttons -->
 <a href="#" class="float">
   <i class="fa fa-plus icon"></i>
 </a>
 <ul>
   <li>
-    <a href="/wordNetwork" class="twitterBtn">
+    <a href="/wordNetwork" class="twitterBtn floater-7">
       <i class="fa fa-twitter icon"></i>
     </a>
+        <div class="label-text-container-7">
+      <div class="label-text-box">Twitter Opinions</div>
+    </div>
   </li>
   <li>
-    <a href="/discoverMore">
+    <a href="/discoverMore" class="floater-6">
       <div class="centreIcon" class="btnLoading">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -250,9 +336,12 @@ content %}
         </svg>
       </div>
     </a>
+        <div class="label-text-container-6">
+      <div class="label-text-box">Name Entity</div>
+    </div>
   </li>
   <li>
-    <a href="/sentiment" class="emotionBtn">
+    <a href="/sentiment" class="emotionBtn floater-5">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -268,9 +357,12 @@ content %}
         </svg>
       </div>
     </a>
+      <div class="label-text-container-5">
+      <div class="label-text-box">Author Emotion</div>
+    </div>
   </li>
   <li>
-    <a href="/textAnalysis" class="analysisBtn">
+    <a href="/textAnalysis" class="analysisBtn floater-4">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -286,9 +378,12 @@ content %}
         </svg>
       </div>
     </a>
+    <div class="label-text-container-4">
+      <div class="label-text-box">Text Analysis</div>
+    </div>
   </li>
   <li>
-    <a href="/summary" class="btn-get-started scrollto sumBtn">
+    <a href="/summary" class="btn-get-started scrollto sumBtn floater-3">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -304,16 +399,25 @@ content %}
         </svg>
       </div>
     </a>
+    <div class="label-text-container-3">
+      <div class="label-text-box">Summary</div>
+    </div>
   </li>
   <li>
-    <a href="#">
+    <a href="#" class="floater-2">
       <i class="fa fa-thumbs-up icon"></i>
     </a>
+        <div class="label-text-container-2">
+      <div class="label-text-box">Like</div>
+    </div>
   </li>
     <li>
-    <a href="/" class="dashboardBtn">
+    <a href="/" class="dashboardBtn floater-1">
       <i class="fa fa-backward icon"></i>
     </a>
+    <div class="label-text-container-1">
+      <div class="label-text-box">Back</div>
+    </div>
   </li>
 </ul>
 <!-- End - Buttons -->
@@ -527,5 +631,5 @@ content %}
 
 <!-- Button Response -->
 <script src="../static/btnResponse.js"></script>
-
+<script src="../static/quickReview.js"></script>
 {% endblock %}

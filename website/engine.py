@@ -10,6 +10,7 @@ from pickle import STRING
 from nltk import tokenize
 from operator import itemgetter
 import math
+import datetime
 
 # Remove Stopwords
 import nltk
@@ -356,6 +357,7 @@ def extractive_summarizer(doc: STRING):
 
 #----------------------------------------------------------------------------------------
 # Text Summarizer with model
+
 from transformers import pipeline, PegasusForConditionalGeneration, PegasusTokenizer
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
@@ -528,7 +530,7 @@ def loadToSummaryCache(res: summaryReport):
     print("Summary Cache Start ..")
     from .models import summaryCache
     from . import db
-    print("FINSIH IMPOR DB")
+    print("FINSIH IMPORT DB")
     title = res.get_title()
     doc = res.get_doc()
     extractKeyWord = toJSON(res.get_extractKeyWord())
@@ -563,6 +565,23 @@ def loadToSummaryCache(res: summaryReport):
         print("Summary Cache Success ..")
 
 
+def loadToTwitterCache(hashtag, data):
+    print("Twitter Cache Start ..")
+    from .models import twitterCache
+    from . import db
+    # extract date record
+    now = str(datetime.date.today())
+    cache = twitterCache(hashtag=hashtag, foundDate=now, data=data)
+    if not cache:
+        print("The Twitter Cache Build is failed")
+    else:
+        print("Twitter Cache start ..")
+        # load to dB
+        db.session.add(cache)
+        db.session.commit()
+        print("Twitter Cache Success ..")
+
+
 def toJSON(self):
     import json
     return json.dumps(self, default=lambda o: o.__dict__, 
@@ -591,3 +610,45 @@ def getAllKeys(doc):
     keys_phase_list = importancePercentageCalculate(k_phase_list, Phase=True)
     # return the keys
     return (top_keys_mean_list, model_keys_list, keys_phase_list)
+
+
+# Call for the function of Quick Review
+def quick_review(doc: STRING):
+    try:
+        stop_words = stopwords.words('english')
+        summarize_text = []
+
+        # Read text and tokenize
+        sentences =  preprocess_text(doc)
+
+        # Generate Similary Martix across sentences
+        sentence_similarity_martix = similarity_matrix_construct(sentences, stop_words)
+
+        # Rank sentences in similarity martix
+        sentence_similarity_graph = nx.from_numpy_array(sentence_similarity_martix)
+        scores = nx.pagerank(sentence_similarity_graph)
+
+        # Sort the rank and pick top sentences
+        ranked_sentence = sorted(((scores[i],s) for i,s in enumerate(sentences)), reverse=True)
+
+        # Define the top sentence extracted (take 60%)
+        top_n = round(len(sent_tokenize(doc)) * 0.6)
+        print("TOP_N:" + str(top_n))
+
+        for i in range(top_n):
+            summarize_text.append(" ".join(ranked_sentence[i][1]))
+        
+        # construct the summary and combine out
+        sum_text = " ".join(summarize_text)
+        return sum_text
+    except:
+        return constants.DEFAULT_ERROR_MESSAGE, getWordCount(constants.DEFAULT_ERROR_MESSAGE), getSentenceCount(constants.DEFAULT_ERROR_MESSAGE)
+
+
+# quick review html return
+
+from spacy import displacy
+
+def get_highlight_text(rawtext):
+    review = displacy.render(nlp(rawtext), style='ent')
+    return review

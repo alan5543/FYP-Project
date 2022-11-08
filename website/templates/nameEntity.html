@@ -18,6 +18,7 @@
 
     <!-- Like Btn -->
     <link href="..\static\css\likeBtn\style.css" rel="stylesheet" />
+    <link href="..\static\css\likeBtn\infoBox.css" rel="stylesheet" />
 
     <div class="grey-bg container-fluid">
         <section id="minimal-statistics">
@@ -307,12 +308,15 @@
 </a>
 <ul>
   <li>
-    <a href="/wordNetwork" class="twitterBtn">
+    <a href="/wordNetwork" class="twitterBtn floater-6">
       <i class="fa fa-twitter icon"></i>
     </a>
+    <div class="label-text-container-6">
+      <div class="label-text-box">Twitter Opinions</div>
+    </div>
   </li>
   <li>
-    <a href="/sentiment" class="emotionBtn">
+    <a href="/sentiment" class="emotionBtn floater-5">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -328,9 +332,12 @@
         </svg>
       </div>
     </a>
+  <div class="label-text-container-5">
+      <div class="label-text-box">Author Emotion</div>
+    </div>
   </li>
   <li>
-    <a href="/textAnalysis" class="analysisBtn">
+    <a href="/textAnalysis" class="analysisBtn floater-4">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -346,9 +353,12 @@
         </svg>
       </div>
     </a>
+    <div class="label-text-container-4">
+      <div class="label-text-box">Text Analysis</div>
+    </div>
   </li>
   <li>
-    <a href="/summary" class="btn-get-started scrollto sumBtn">
+    <a href="/summary" class="btn-get-started scrollto sumBtn floater-3">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -364,16 +374,25 @@
         </svg>
       </div>
     </a>
+    <div class="label-text-container-3">
+      <div class="label-text-box">Summary</div>
+    </div>
   </li>
   <li>
-    <a href="#">
+    <a href="#" class="floater-2">
       <i class="fa fa-thumbs-up icon"></i>
     </a>
+    <div class="label-text-container-2">
+      <div class="label-text-box">Like</div>
+    </div>
   </li>
   <li>
-    <a href="/dashboard" class="dashboardBtn">
+    <a href="{{ url_for('reports.newReport', title=title, doc=doc) }}" class="dashboardBtn floater-1">
       <i class="fa fa-backward icon"></i>
     </a>
+    <div class="label-text-container-1">
+      <div class="label-text-box">Back</div>
+    </div>
   </li>
 </ul>
 <!-- End - Buttons -->

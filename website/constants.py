@@ -85,6 +85,8 @@ TOPIC_LABEL_HEALTH = 'Health News'
 REJECT_TO_API = "The API service is in error"
 NO_SUPPORRT_API = "The API service is not supported"
 
+# debugging mode
+DEBUG_MODE = False
 
 TWEET_DEMO = {
     "countries": [

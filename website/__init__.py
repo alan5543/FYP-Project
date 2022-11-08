@@ -50,7 +50,7 @@ def create_app():
     app.register_blueprint(apiService, url_prefix="/")
 
     # import the database structure and create the database
-    from .models import User, Record, ExploreNew, summaryCache
+    from .models import User, Record, ExploreNew, summaryCache, twitterCache
     database_create(app)
 
     # Initalizing the app and set up with the login page

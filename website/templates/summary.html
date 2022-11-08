@@ -8,6 +8,8 @@
 
 <!-- Like Btn -->
 <link href="..\static\css\sumLikeBtn\style.css" rel="stylesheet" />
+<link href="..\static\css\LikeBtn\infoBox.css" rel="stylesheet" />
+
 
 
 <!--Introduction Carousel-->
@@ -131,14 +133,14 @@
       </li>
     </ul>
     <div id="myTabContent" class="tab-content">
-      <div id="extract" role="tabpanel" aria-labelledby="extract-tab" class="tab-pane fade px-4 py-5 show active">
+      <div id="extract" role="tabpanel" aria-labelledby="extract-tab" class="tab-pane fade px-4 py-5 show active text-centre">
         <p class="text-muted">{{ result["extract_sum"] }}</p>
         <p class="text-muted mb-0">The Sentence Count is {{ result["extract_sum_sent"] }} and The Word Count is {{ result["extract_sum_word"] }}.</p>
         
         <button type="button" class="btn btn-secondary summary-compare-button btn-lg" data-toggle="modal" data-target="#modalRelatedContent2">Compare with Orginal</button>
       </div>
 
-      <div id="abstract" role="tabpanel" aria-labelledby="abstract-tab" class="tab-pane fade px-4 py-5">
+      <div id="abstract" role="tabpanel" aria-labelledby="abstract-tab" class="tab-pane fade px-4 py-5 text-centre">
         <p class="text-muted">{{ result["abstract_sum"] }}</p>
         <p class="text-muted mb-0">The Sentence Count is {{ result["abstract_sum_sent"] }} and The Word Count is {{ result["abstract_sum_word"] }}.</p>
         
@@ -284,7 +286,7 @@ aria-labelledby="myModalLabel" aria-hidden="true">
 <hr class="featurette-divider">
 
 <!--Main Concepts Corner-->
-<div class="container px-4 py-5" id="featured-3">
+<div class="container px-4 py-5 text-centre" id="featured-3">
     <h2 class="pb-2 border-bottom">Learn Valuable Concepts from You News</h2>
 
     <p >
@@ -479,12 +481,15 @@ aria-labelledby="myModalLabel" aria-hidden="true">
 </a>
 <ul class="footer">
   <li class="footer-btn">
-    <a href="/wordNetwork" class="twitterBtn footer-btn-link">
+    <a href="/wordNetwork" class="twitterBtn footer-btn-link floater-6">
       <i class="fa fa-twitter icon"></i>
     </a>
+        <div class="label-text-container-6">
+      <div class="label-text-box">Twitter Opinions</div>
+    </div>
   </li>
   <li class="footer-btn">
-    <a href="/discoverMore" class="footer-btn-link">
+    <a href="/discoverMore" class="footer-btn-link floater-5">
       <div class="centreIcon" class="btnLoading">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -500,9 +505,12 @@ aria-labelledby="myModalLabel" aria-hidden="true">
         </svg>
       </div>
     </a>
+  <div class="label-text-container-5">
+      <div class="label-text-box">Name Entity</div>
+    </div>
   </li>
   <li class="footer-btn">
-    <a href="/sentiment" class="emotionBtn footer-btn-link">
+    <a href="/sentiment" class="emotionBtn footer-btn-link floater-4">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -518,9 +526,12 @@ aria-labelledby="myModalLabel" aria-hidden="true">
         </svg>
       </div>
     </a>
+    <div class="label-text-container-4">
+      <div class="label-text-box">Author Emotion</div>
+    </div>
   </li>
   <li class="footer-btn">
-    <a href="/textAnalysis" class="analysisBtn footer-btn-link">
+    <a href="/textAnalysis" class="analysisBtn footer-btn-link floater-3">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -536,16 +547,25 @@ aria-labelledby="myModalLabel" aria-hidden="true">
         </svg>
       </div>
     </a>
+    <div class="label-text-container-3">
+      <div class="label-text-box">Text Analysis</div>
+    </div>
   </li>
   <li class="footer-btn">
-    <a href="#" class="footer-btn-link">
+    <a href="#" class="footer-btn-link floater-2">
       <i class="fa fa-thumbs-up icon"></i>
     </a>
+    <div class="label-text-container-2">
+      <div class="label-text-box">Like</div>
+    </div>
   </li>
   <li class="footer-btn">
-    <a href="/dashboard" class="footer-btn-link">
+    <a href="{{ url_for('reports.newReport', title=title, doc=doc) }}" class="footer-btn-link floater-1">
       <i class="fa fa-backward icon"></i>
     </a>
+    <div class="label-text-container-1">
+      <div class="label-text-box">Back</div>
+    </div>
   </li>
 </ul>
 <!-- End - Buttons -->

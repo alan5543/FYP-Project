@@ -50,3 +50,11 @@ class summaryCache(db.Model):
     coreSentWordCount = db.Column(db.Integer)
     docWordCount = db.Column(db.Integer)
     docSentWordCount = db.Column(db.Integer)
+
+
+# For Twitter API Cache UX
+class twitterCache(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    hashtag = db.Column(db.String(100))
+    foundDate = db.Column(db.String(50))
+    data = db.Column(db.String(1000000))

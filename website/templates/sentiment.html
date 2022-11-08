@@ -15,7 +15,10 @@ content %}
 
 
 <!-- Like Btn -->
-<link href="..\static\css\likeBtn\style.css" rel="stylesheet" />
+<link href="..\static\css\likeBtn\classStyle.css" rel="stylesheet" />
+
+<!-- Like Info Box -->
+<link href="..\static\css\likeBtn\infoBox.css" rel="stylesheet" />
 
 
 <!-- Loader -->
@@ -75,20 +78,20 @@ content %}
                   </h6>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body flexBox">
-                    <div class="displayBox targetBox marginCorner">
+                <div class="card-body flexBox ">
+                    <div class="displayBox targetBox marginCorner text-centre">
                         <p class="text-white">-</p>
                         <h5 class="text-white text-bold top-margin">
-                            {% if sentimentClassifier.output == "Negative" %} Pessimistic {%
-                            elif sentimentClassifier.output == "Netural" %} Realistic {% elif
-                            sentimentClassifier.output == "Positive" %} Optimistic {% else %}
-                            {{ sentimentClassifier.output }} {% endif %}
+                            {% if sentimentClr.output == "Negative" %} Pessimistic {%
+                            elif sentimentClr.output == "Netural" %} Realistic {% elif
+                            sentimentClr.output == "Positive" %} Optimistic {% else %}
+                            {{ sentimentClr.output }} {% endif %}
                         </h5>
                     </div>
-                    <div class="displayBox infoBox">
+                    <div class="displayBox infoBox text-centre">
                         <p>-</p>
                     <span class="text-bold top-margin"
-                        >Score {{sentimentClassifier.compoundValue }}
+                        >Score {{sentimentClr.compoundValue }}
                     </span>
                     </div>
                 </div>
@@ -121,7 +124,6 @@ content %}
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
             Close
           </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
@@ -166,31 +168,31 @@ content %}
                 </div>
                 <!-- Card Body -->
                 <div class="card-body flexBox">
-                    <div class="sentimentDisplayBox targetBox marginCorner">
+                    <div class="sentimentDisplayBox targetBox marginCorner text-centre">
                         <p class="text-white">-</p>
                         <h5 class="text-white text-bold top-margin">
-                            {% if sentimentClassifier.overallPolarity < -0.66 %}
+                            {% if sentimentClr.overallPolarity < -0.66 %}
                             Strongly Negative
-                            {% elif sentimentClassifier.overallPolarity < -0.33 %}
+                            {% elif sentimentClr.overallPolarity < -0.33 %}
                             Moderately Negative
-                            {% elif sentimentClassifier.overallPolarity < -0.05 %}
+                            {% elif sentimentClr.overallPolarity < -0.05 %}
                             Slightly Negative
-                            {% elif sentimentClassifier.overallPolarity < 0.05 %}
+                            {% elif sentimentClr.overallPolarity < 0.05 %}
                             Moderately Netural
-                            {% elif sentimentClassifier.overallPolarity < 0.33 %}
+                            {% elif sentimentClr.overallPolarity < 0.33 %}
                             Slightly Positive
-                            {% elif sentimentClassifier.overallPolarity < 0.66 %}
+                            {% elif sentimentClr.overallPolarity < 0.66 %}
                             Moderately Postive
-                            {% elif sentimentClassifier.overallPolarity < 1 %}
+                            {% elif sentimentClr.overallPolarity < 1 %}
                             Strongly Negative
                             {% endif %}
                         </h5>
                     </div>
-                    <div class="sentimentDisplayBox infoBox">
+                    <div class="sentimentDisplayBox infoBox text-centre">
                     <p>-</p>
                                       <span class="text-bold top-margin"
                 >Polarity Score: ({{'%0.2f'|
-                format(sentimentClassifier.overallPolarity *100|float)}}%)</span
+                format(sentimentClr.overallPolarity *100|float)}}%)</span
               >
                     </div>
                 </div>
@@ -223,7 +225,6 @@ content %}
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
             Close
           </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
@@ -279,7 +280,6 @@ content %}
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
             Close
           </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
@@ -322,7 +322,7 @@ content %}
                   </h6>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body">
+                <div class="card-body text-centre">
                   <div class="chart-area pt-4 pb-2">
                     {% if highProbEmotion['Emotion'] == "anger" %}
                     <img
@@ -428,7 +428,6 @@ content %}
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
             Close
           </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
@@ -441,10 +440,10 @@ content %}
           <div class="inner">
             <h3>Point of View</h3>
             <h5 class="elementStyle">
-              {% if sentimentClassifier.output == "Negative" %} Pessimistic {%
-              elif sentimentClassifier.output == "Netural" %} Realistic {% elif
-              sentimentClassifier.output == "Positive" %} Optimistic {% else %}
-              {{ sentimentClassifier.output }} {% endif %}
+              {% if sentimentClr.output == "Negative" %} Pessimistic {%
+              elif sentimentClr.output == "Netural" %} Realistic {% elif
+              sentimentClr.output == "Positive" %} Optimistic {% else %}
+              {{ sentimentClr.output }} {% endif %}
             </h5>
           </div>
           <div class="icon">
@@ -466,19 +465,19 @@ content %}
           <div class="inner">
             <h3>Sentiment</h3>
             <h5 class="elementStyle">
-                            {% if sentimentClassifier.overallPolarity < -0.66 %}
+                            {% if sentimentClr.overallPolarity < -0.66 %}
                             Strongly Negative
-                            {% elif sentimentClassifier.overallPolarity < -0.33 %}
+                            {% elif sentimentClr.overallPolarity < -0.33 %}
                             Moderately Negative
-                            {% elif sentimentClassifier.overallPolarity < -0.05 %}
+                            {% elif sentimentClr.overallPolarity < -0.05 %}
                             Slightly Negative
-                            {% elif sentimentClassifier.overallPolarity < 0.05 %}
+                            {% elif sentimentClr.overallPolarity < 0.05 %}
                             Moderately Netural
-                            {% elif sentimentClassifier.overallPolarity < 0.33 %}
+                            {% elif sentimentClr.overallPolarity < 0.33 %}
                             Slightly Positive
-                            {% elif sentimentClassifier.overallPolarity < 0.66 %}
+                            {% elif sentimentClr.overallPolarity < 0.66 %}
                             Moderately Postive
-                            {% elif sentimentClassifier.overallPolarity < 1 %}
+                            {% elif sentimentClr.overallPolarity < 1 %}
                             Strongly Negative
                             {% endif %}
             </h5>
@@ -501,11 +500,11 @@ content %}
           <div class="inner">
             <h3>Subjectivity</h3>
             <h5 class="elementStyle">
-              {% if sentimentClassifier.overallSubjectivity < 0.25 %} Strongly
-              Objective {% elif sentimentClassifier.overallSubjectivity < 0.5 %}
-              Slightly Objective {% elif sentimentClassifier.overallSubjectivity
+              {% if sentimentClr.overallSubjectivity < 0.25 %} Strongly
+              Objective {% elif sentimentClr.overallSubjectivity < 0.5 %}
+              Slightly Objective {% elif sentimentClr.overallSubjectivity
               < 0.75 %} Slightly Subjective {% elif
-              sentimentClassifier.overallSubjectivity < 1 %} Strongly Subjective
+              sentimentClr.overallSubjectivity < 1 %} Strongly Subjective
               {% endif %}
             </h5>
           </div>
@@ -551,14 +550,14 @@ content %}
 {#     <div class="row justify-content-center">
       <div class="col-lg-4 col-md-12">
         <div class="white-box analytics-info">
-          {% if sentimentClassifier.output == "Negative" %}
+          {% if sentimentClr.output == "Negative" %}
           <h3 class="box-title">Pessimistic Article</h3>
-          {% elif sentimentClassifier.output == "Netural" %}
+          {% elif sentimentClr.output == "Netural" %}
           <h3 class="box-title">Realistic Article</h3>
-          {% elif sentimentClassifier.output == "Positive" %}
+          {% elif sentimentClr.output == "Positive" %}
           <h3 class="box-title">Optimistic Article</h3>
           {% else %}
-          <h3 class="box-title">{{ sentimentClassifier.output }}</h3>
+          <h3 class="box-title">{{ sentimentClr.output }}</h3>
           {% endif %}
           <ul class="list-inline two-part d-flex align-items-center mb-0">
             <li>
@@ -577,7 +576,7 @@ content %}
             </li>
             <li class="ms-auto">
               <span class="counter text-success"
-                >Compound Value: ({{sentimentClassifier.compoundValue }})
+                >Compound Value: ({{sentimentClr.compoundValue }})
               </span>
             </li>
           </ul>
@@ -585,13 +584,13 @@ content %}
       </div>
       <div class="col-lg-4 col-md-12">
         <div class="white-box analytics-info">
-          {% if sentimentClassifier.overallSubjectivity < 0.25 %}
+          {% if sentimentClr.overallSubjectivity < 0.25 %}
           <h3 class="box-title">Strongly Objective Article</h3>
-          {% elif sentimentClassifier.overallSubjectivity < 0.5 %}
+          {% elif sentimentClr.overallSubjectivity < 0.5 %}
           <h3 class="box-title">Slightly Objective Article</h3>
-          {% elif sentimentClassifier.overallSubjectivity < 0.75 %}
+          {% elif sentimentClr.overallSubjectivity < 0.75 %}
           <h3 class="box-title">Slightly Subjective Article</h3>
-          {% elif sentimentClassifier.overallSubjectivity < 1 %}
+          {% elif sentimentClr.overallSubjectivity < 1 %}
           <h3 class="box-title">Strongly Subjective Article</h3>
           {% endif %}
           <ul class="list-inline two-part d-flex align-items-center mb-0">
@@ -612,7 +611,7 @@ content %}
             <li class="ms-auto">
               <span class="counter text-purple"
                 >Subjectivity Score: ({{'%0.2f'|
-                format(sentimentClassifier.overallSubjectivity*100|float)}}%)
+                format(sentimentClr.overallSubjectivity*100|float)}}%)
               </span>
             </li>
           </ul>
@@ -620,19 +619,19 @@ content %}
       </div>
       <div class="col-lg-4 col-md-12">
         <div class="white-box analytics-info">
-          {% if sentimentClassifier.overallPolarity < -0.66 %}
+          {% if sentimentClr.overallPolarity < -0.66 %}
           <h3 class="box-title">Strongly Negative</h3>
-          {% elif sentimentClassifier.overallPolarity < -0.33 %}
+          {% elif sentimentClr.overallPolarity < -0.33 %}
           <h3 class="box-title">Moderately Negative</h3>
-          {% elif sentimentClassifier.overallPolarity < -0.05 %}
+          {% elif sentimentClr.overallPolarity < -0.05 %}
           <h3 class="box-title">Slightly Negative</h3>
-          {% elif sentimentClassifier.overallPolarity < 0.05 %}
+          {% elif sentimentClr.overallPolarity < 0.05 %}
           <h3 class="box-title">Moderately Netural</h3>
-          {% elif sentimentClassifier.overallPolarity < 0.33 %}
+          {% elif sentimentClr.overallPolarity < 0.33 %}
           <h3 class="box-title">Slightly Positive</h3>
-          {% elif sentimentClassifier.overallPolarity < 0.66 %}
+          {% elif sentimentClr.overallPolarity < 0.66 %}
           <h3 class="box-title">Moderately Postive</h3>
-          {% elif sentimentClassifier.overallPolarity < 1 %}
+          {% elif sentimentClr.overallPolarity < 1 %}
           <h3 class="box-title">Strongly Negative</h3>
           {% endif %}
 
@@ -654,7 +653,7 @@ content %}
             <li class="ms-auto">
               <span class="counter text-info"
                 >Polarity Score: ({{'%0.2f'|
-                format(sentimentClassifier.overallPolarity *100|float)}}%)</span
+                format(sentimentClr.overallPolarity *100|float)}}%)</span
               >
             </li>
           </ul>
@@ -722,7 +721,7 @@ content %}
                 </tr>
               </thead>
               <tbody>
-                {% for sent in sentimentClassifier.sentList %}
+                {% for sent in sentimentClr.sentList %}
                 <tr>
                   <td>Sentence {{loop.index}}</td>
                   <td>{{ sent.sentence}}</td>
@@ -839,10 +838,10 @@ content %}
 <a href="#" class="float">
   <i class="fa fa-plus icon"></i>
 </a>
-<ul>
+<ul class="btnList">
   <li>
-    <a href="/discoverMore">
-      <div class="centreIcon" class="btnLoading">
+    <a href="/discoverMore" class="floater-6">
+      <div class="centreIcon" class="btnLoading ">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="25"
@@ -857,14 +856,20 @@ content %}
         </svg>
       </div>
     </a>
+    <div class="label-text-container-6">
+      <div class="label-text-box">Name Entity</div>
+    </div>
   </li>
   <li>
-    <a href="/wordNetwork" class="twitterBtn">
+    <a href="/wordNetwork" class="twitterBtn floater-5">
       <i class="fa fa-twitter icon"></i>
     </a>
+    <div class="label-text-container-5">
+      <div class="label-text-box">Twitter Opinions</div>
+    </div>
   </li>
   <li>
-    <a href="/textAnalysis" class="analysisBtn">
+    <a href="/textAnalysis" class="analysisBtn floater-4">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -880,9 +885,12 @@ content %}
         </svg>
       </div>
     </a>
+    <div class="label-text-container-4">
+      <div class="label-text-box">Text Analysis</div>
+    </div>
   </li>
   <li>
-    <a href="/summary" class="btn-get-started scrollto sumBtn">
+    <a href="/summary" class="btn-get-started scrollto sumBtn floater-3">
       <div class="centreIcon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -898,16 +906,25 @@ content %}
         </svg>
       </div>
     </a>
+    <div class="label-text-container-3">
+      <div class="label-text-box">Summary</div>
+    </div>
   </li>
   <li>
-    <a href="#">
+    <a href="#" class="floater-2">
       <i class="fa fa-thumbs-up icon"></i>
     </a>
+    <div class="label-text-container-2">
+      <div class="label-text-box">Like</div>
+    </div>
   </li>
   <li>
-    <a href="/dashboard" class="dashboardBtn">
+    <a href="{{ url_for('reports.newReport', title=title, doc=doc) }}"class="dashboardBtn floater-1">
       <i class="fa fa-backward icon"></i>
     </a>
+    <div class="label-text-container-1">
+      <div class="label-text-box">Back</div>
+    </div>
   </li>
 </ul>
 <!-- End - Buttons -->
@@ -928,9 +945,9 @@ content %}
             axis: 'y',
             label: 'Content Dataset',
             data: [
-                {{sentimentClassifier.overallPolarity}},
-                {{sentimentClassifier.overallSubjectivity}},
-                {{sentimentClassifier.compoundPercent}},
+                {{sentimentClr.overallPolarity}},
+                {{sentimentClr.overallSubjectivity}},
+                {{sentimentClr.compoundPercent}},
             ],
             backgroundColor: [
                 'rgb(219, 112, 147)',
@@ -960,12 +977,12 @@ content %}
             axis: 'y',
             label: 'Content Dataset',
             data: [
-                {% if sentimentClassifier.overallSubjectivity < 0.5 %}
-                    100 - (-({{sentimentClassifier.overallSubjectivity}} - 1)/1) * 100,
-                    (-({{sentimentClassifier.overallSubjectivity}} - 1)/1) * 100,
+                {% if sentimentClr.overallSubjectivity < 0.5 %}
+                    100 - (-({{sentimentClr.overallSubjectivity}} - 1)/1) * 100,
+                    (-({{sentimentClr.overallSubjectivity}} - 1)/1) * 100,
                 {% else %}
-                    {{sentimentClassifier.overallSubjectivity}} * 100,
-                    100 - ({{sentimentClassifier.overallSubjectivity}} * 100),
+                    {{sentimentClr.overallSubjectivity}} * 100,
+                    100 - ({{sentimentClr.overallSubjectivity}} * 100),
                 {% endif %}
             ],
             backgroundColor: [
@@ -993,9 +1010,9 @@ content %}
         datasets: [{
             label: 'Sentiment Distribution',
             data: [
-                {{sentimentClassifier.positve}},
-                {{sentimentClassifier.netural}},
-                {{sentimentClassifier.negative}},
+                {{sentimentClr.positve}},
+                {{sentimentClr.netural}},
+                {{sentimentClr.negative}},
             ],
             backgroundColor: [
                 'rgb(220, 20, 60)',
@@ -1016,14 +1033,14 @@ content %}
     var ctxDistribute = document.getElementById('DistributeChart').getContext('2d');
     const dataDistribute = {
         labels: [
-            {% for sent in sentimentClassifier.sentList %}
+            {% for sent in sentimentClr.sentList %}
                 "Sentence {{loop.index}}",
             {% endfor %}
         ],
         datasets: [{
             label: 'Polarity',
             data: [
-            {% for sent in sentimentClassifier.sentList %}
+            {% for sent in sentimentClr.sentList %}
                 {{sent.polarity}},
             {% endfor %}
             ],
@@ -1034,7 +1051,7 @@ content %}
         {
             label: 'Subjectivity',
             data: [
-            {% for sent in sentimentClassifier.sentList %}
+            {% for sent in sentimentClr.sentList %}
                 {{sent.subjectivity}},
             {% endfor %}
             ],

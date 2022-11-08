@@ -41,9 +41,9 @@
                   <a class ="nav-item nav-link" id="corner" href="/yourCorner">Your Corner</a>
                   <a class ="nav-item nav-link" id="explore" href="/explore">Today News</a>
                   <!--<a class ="nav-item nav-link" id="hktoday" href="/HKToday">HK Today</a>-->
-                  <a class ="nav-item nav-link" id="aboutus" href="/AboutUs">About Us</a>
+                  <a class ="nav-item nav-link" id="aboutus" href="/aboutUs">About Us</a>
                   {% else %}
-                  <a class ="nav-item nav-link" id="dashboard" href="/dashboard">DASHBOARD</a>
+                  <a class ="nav-item nav-link" id="dashboard" href="{{ url_for('reports.newReport', title=title, doc=doc) }}">DASHBOARD</a>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Result
@@ -65,7 +65,7 @@
                   <a class ="nav-item nav-link" id="home" href="/">HOME</a>
                   <a class ="nav-item nav-link" id="login" href="/login">Login</a>
                   <a class ="nav-item nav-link" id="signUp" href="/sign">Sign Up</a>
-                  <a class ="nav-item nav-link" id="aboutus" href="/AboutUs">About Us</a>
+                  <a class ="nav-item nav-link" id="aboutus" href="/aboutUs">About Us</a>
                   {% endif %}
                 </div>
             </div>

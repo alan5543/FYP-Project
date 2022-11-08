@@ -3,12 +3,21 @@ from flask_login import login_required, current_user
 from nltk import text
 import json
 
-from sqlalchemy import false, true
+from pygments import highlight
 
 
 from website import constants
 from . import engine
 import requests
+from .models import ExploreNew, twitterCache
+from .emotionModel import get_emotion_predict_res
+from .sentiment import sentimentClassifier
+from .engine import loadToTwitterCache
+import datetime
+
+# URL
+from .url import get_url
+
 
 reports = Blueprint('reports', __name__)
 
@@ -41,7 +50,18 @@ def newReport():
     title = request.args.get('title')
     doc = request.args.get('doc')
     Result._set_all(title, doc)
-    return render_template("dashboard.html", boolean = True , user=current_user, InputNow=False)
+    # quick review
+    quick_review = engine.quick_review(doc)
+    foundNews = ExploreNew.query.filter_by(title=title).first()
+    newImage = foundNews.image if foundNews else constants.DEFAULT_INPUT_IMAGE
+    # quick predict emotion
+    emotion = get_emotion_predict_res([doc])
+    highProbEmotion = emotion["HighProba"]
+    # quick the sentiment
+    sentimentClr = sentimentClassifier(doc)
+    # get highlight
+    highlight_text = engine.get_highlight_text(doc)
+    return render_template("dashboard.html", boolean = True , user=current_user, InputNow=False, quick_review=quick_review, title=title, newImage=newImage, doc=doc, highProbEmotion=highProbEmotion, sentimentClr=sentimentClr, highlight_text=highlight_text)
 
 @reports.route('/dashboard')
 @login_required
@@ -58,7 +78,6 @@ def summary():
 
         # extract the news image from database
         print("building news image ...")
-        from .models import ExploreNew
         foundNews = ExploreNew.query.filter_by(title=title).first()
         newImage = foundNews.image if foundNews else constants.DEFAULT_INPUT_IMAGE
 
@@ -70,8 +89,11 @@ def summary():
         print("Finishing Finding Cache")
         if not previous_summary:
             print("Not Found Summary Cache ...")
+            
             # get the summary API
-            res = requests.post('http://127.0.0.1:8001/api/get_summarization', json={"title": title, "doc": doc})
+            API_SERVICE = get_url('get_summarization')
+            res = requests.post(API_SERVICE, json={"title": title, "doc": doc})
+
             if res.ok:
                 result = res.json()
                 return render_template("summary.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc, newImage=newImage, result=result) 
@@ -99,7 +121,6 @@ def summary():
             cache.coreSent, cache.coreSentWordCount, cache.docWordCount, cache.docSentWordCount)
             # return to frontend
             result = res.__dict__
-            print("-------")
             return render_template("summary.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc, newImage=newImage, result=result)
 
     except Exception as error:
@@ -118,17 +139,18 @@ def toJSON(res):
 def sentiment():
     title = Result._get_title()
     doc = Result._get_doc()
-    from . import sentiment
 
     # predict the sentiment
-    sentimentClassifier = sentiment.sentimentClassifier(doc)
+    sentimentClr = sentimentClassifier(doc)
+
     # predict the emotion
-    res = requests.post('http://127.0.0.1:8001/api/get_emotion', json={"news": [doc]})
+    API_SERVICE = get_url('get_emotion')
+    res = requests.post(API_SERVICE, json={"news": [doc]})
     if res.ok:
         result = res.json()
         highProbEmotion = result["HighProba"]
         lowProbEmotion = result["lowProba"]
-        return render_template("sentiment.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc,sentimentClassifier=sentimentClassifier, highProbEmotion=highProbEmotion, lowProbEmotion=lowProbEmotion)
+        return render_template("sentiment.html", boolean = True , user=current_user, InputNow=False, title=title, doc=doc,sentimentClr=sentimentClr, highProbEmotion=highProbEmotion, lowProbEmotion=lowProbEmotion)
     else:
         flash(constants.INPUT_TEXT_ERROR, category='error')
         return redirect(url_for('reports.newReport', title=title, doc=doc))
@@ -139,13 +161,15 @@ def sentiment():
 def discoverMore():
     title = Result._get_title()
     doc = Result._get_doc()
-    res = requests.post('http://127.0.0.1:8001/api/get_name_entity', json={"news": doc})
+    # get the api service
+    API_SERVICE = get_url('get_name_entity')
+    res = requests.post(API_SERVICE, json={"news": doc})
     if res.ok:
         result = res.json()
         htmlLabel = result["html"]
         nameEntity = result["nameEntity"]
         nameHeaders = engine.get_headers(nameEntity)
-        return render_template("nameEntity.html", boolean = True, user=current_user, htmlLabel=htmlLabel, InputNow=False, nameEntity=nameEntity, nameHeaders=nameHeaders)
+        return render_template("nameEntity.html", boolean = True, user=current_user, htmlLabel=htmlLabel, InputNow=False, nameEntity=nameEntity, nameHeaders=nameHeaders, title=title, doc=doc)
     else:
         flash(constants.INPUT_TEXT_ERROR, category='error')
         return redirect(url_for('reports.newReport', title=title, doc=doc))
@@ -214,7 +238,8 @@ def wordNetwork():
     title = Result._get_title()
     doc = Result._get_doc()
     # get the hashtags
-    res = requests.post('http://127.0.0.1:8001/api/get_hashtag', json={"title": title, "doc": doc})
+    API_SERVICE = get_url('get_hashtag')
+    res = requests.post(API_SERVICE, json={"title": title, "doc": doc})
     if res.ok:
         result = res.json()
         hashtag = result["hashtag"]
@@ -239,16 +264,18 @@ def question():
 
     if directHashtag == 'True':
         print("Go to Custom Hastag ...")
-        return render_template("questionUI.html" , boolean = True , user=current_user, InputNow=True, hashtag=hashtag, title=title)
+        return render_template("questionUI.html" , boolean = True , user=current_user, InputNow=True, hashtag=hashtag, title=title, doc=doc)
     else:
         print("Go to Dashboard Hastag ...")
-        return render_template("questionUI.html" , boolean = True , user=current_user, InputNow=False, hashtag=hashtag, title=title)
+        return render_template("questionUI.html" , boolean = True , user=current_user, InputNow=False, hashtag=hashtag, title=title, doc=doc)
 
 
 # support
 @reports.route('/supportHashtagInfo', methods=['GET', 'POST'])
 @login_required
 def supportHashtagInfo():
+    title = Result._get_title()
+    doc = Result._get_doc()
     hashTag = request.args.get('hashTag')
     inputStatus = request.args.get('InputNow')
     InputNow = get_input_status(inputStatus)
@@ -256,27 +283,46 @@ def supportHashtagInfo():
     print("HashTag: " + hashTag)
     print("Input Status: " + inputStatus)
     print("Input Boolean: " + str(InputNow))
-    # search the hashtags
-    res = requests.post('http://127.0.0.1:8001/api/get_tweets', json={"keyword": hashTag})
-    if res.ok:
-        result = res.json()
+    # search the twitter API cache
+    now = str(datetime.date.today())
+    cache = twitterCache.query.filter_by(foundDate=now, hashtag=hashTag).first()
+    if not cache:
+        # search the hashtags
+        API_SERVICE = get_url('get_tweets')
+        res = requests.post(API_SERVICE, json={"keyword": hashTag})
+        if res.ok:
+            result = res.json()
+            tweets = result["tweets"]
+            hotWords = result["hotWords"]
+            tweets_num = result["tweets_num"]
+            opinon = result["opinon"]
+            timeline = result["timeline"]
+            # load to the cache
+            twitterRecord = toJSON(result)
+            loadToTwitterCache(hashTag, twitterRecord)
+            return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=True, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result, title=title, doc=doc)
+        else:
+            flash(constants.INPUT_TEXT_ERROR, category='error')
+            return redirect(url_for('reports.newReport', title=title, doc=doc))
+    else:
+        # found the cache
+        print("Found the cache ...")
+        result = json.loads(cache.data)
         tweets = result["tweets"]
         hotWords = result["hotWords"]
         tweets_num = result["tweets_num"]
         opinon = result["opinon"]
         timeline = result["timeline"]
-        return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=True, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result)
-    else:
-        title = Result._get_title()
-        doc = Result._get_doc()
-        flash(constants.INPUT_TEXT_ERROR, category='error')
-        return redirect(url_for('reports.newReport', title=title, doc=doc))
+        return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=True, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result, title=title, doc=doc)
+
 
 
 # not support
 @reports.route('/notSupportHashtagInfo', methods=['GET', 'POST'])
 @login_required
 def notSupportHashtagInfo():
+    title = Result._get_title()
+    doc = Result._get_doc()
     hashTag = request.args.get('hashTag')
     inputStatus = request.args.get('InputNow')
     InputNow = get_input_status(inputStatus)
@@ -284,28 +330,47 @@ def notSupportHashtagInfo():
     print("HashTag: " + hashTag)
     print("Input Status: " + inputStatus)
     print("Input Boolean: " + str(InputNow))
-    # search the hashtags
-    res = requests.post('http://127.0.0.1:8001/api/get_tweets', json={"keyword": hashTag})
-    if res.ok:
-        result = res.json()
+    # search the twitter API cache
+    now = str(datetime.date.today())
+    cache = twitterCache.query.filter_by(foundDate=now, hashtag=hashTag).first()
+    if not cache:  
+        # search the hashtags
+        API_SERVICE = get_url('get_tweets')
+        res = requests.post(API_SERVICE, json={"keyword": hashTag})
+        if res.ok:
+            result = res.json()
+            tweets = result["tweets"]
+            hotWords = result["hotWords"]
+            tweets_num = result["tweets_num"]
+            opinon = result["opinon"]
+            timeline = result["timeline"]
+            # load to the cache
+            twitterRecord = toJSON(result)
+            loadToTwitterCache(hashTag, twitterRecord)
+            return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=False, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result, title=title, doc=doc)
+        else:
+            flash(constants.INPUT_TEXT_ERROR, category='error')
+            return redirect(url_for('reports.newReport', title=title, doc=doc))
+    else:
+        # found the cache
+        print("Found the cache ...")
+        result = json.loads(cache.data)
         tweets = result["tweets"]
         hotWords = result["hotWords"]
         tweets_num = result["tweets_num"]
         opinon = result["opinon"]
         timeline = result["timeline"]
+        return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=False, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result, title=title, doc=doc)
 
-        return render_template("hashtagInfo.html" , boolean = True , user=current_user, InputNow=InputNow, support=False, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline, hashTag=hashTag, hashtagDoc=result)
-    else:
-        title = Result._get_title()
-        doc = Result._get_doc()
-        flash(constants.INPUT_TEXT_ERROR, category='error')
-        return redirect(url_for('reports.newReport', title=title, doc=doc))
+
 
 # detail hashtag
 @reports.route('/detailHashTag', methods=['GET', 'POST'])
 @login_required
 def detailHashTag():
     try:
+        title = Result._get_title()
+        doc = Result._get_doc()
         res = request.args.get('res')
         res = res.replace("\n", " ")
 
@@ -328,11 +393,9 @@ def detailHashTag():
         distintCountries = result["countries"]
         countryList = getCountryList(all_comments, distintCountries)
 
-        return render_template("detailHashTag.html" , boolean = True , user=current_user, InputNow=InputNow, result=result, support_comments=support_comments, unsupport_comments=unsupport_comments, no_opinons_comments=no_opinons_comments, countryList=countryList)
+        return render_template("detailHashTag.html" , boolean = True , user=current_user, InputNow=InputNow, result=result, support_comments=support_comments, unsupport_comments=unsupport_comments, no_opinons_comments=no_opinons_comments, countryList=countryList, title=title, doc=doc)
         #return render_template("detailHashTag.html" , boolean = True , user=current_user, InputNow=False, support=False, tweets=tweets, hotWords=hotWords, tweets_num=tweets_num, opinon=opinon, timeline=timeline)
     except:
-        title = Result._get_title()
-        doc = Result._get_doc()
         flash(constants.INPUT_TEXT_ERROR, category='error')
         return redirect(url_for('reports.newReport', title=title, doc=doc))
 
@@ -342,3 +405,9 @@ def get_input_status(inputStatus):
         return True
     else:
         return False
+
+
+def toJSON(self):
+    import json
+    return json.dumps(self, default=lambda o: o.__dict__, 
+        sort_keys=True, indent=4)

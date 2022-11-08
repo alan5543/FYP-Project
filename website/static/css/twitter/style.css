@@ -282,7 +282,8 @@ span.badge {
 }
 .timeline {
   list-style: none;
-  padding: 0 0 8px;
+  margin-top: 12vh;
+  /* padding: 0 0 8px; */
   position: relative;
 }
 .timeline:before {
@@ -4521,7 +4522,7 @@ h6.h1 {
 
 .divScroll {
   width: 100%;
-  height: 58vh;
+  height: 70vh;
   overflow-y: scroll;
   overflow-x: hidden;
   padding-top: 3vh;

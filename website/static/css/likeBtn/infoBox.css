@@ -1,0 +1,169 @@
+
+/* Global CSS Function */
+.label-text-box {
+    color: #fff;
+    background: rgba(51, 51, 51, 0.5);
+    display: table-cell;
+    vertical-align: middle;
+    padding: 10px;
+    border-radius: 3px;
+  }
+  
+  .label-arrow {
+    display: table-cell;
+    vertical-align: middle;
+    color: #333;
+    opacity: 0.5;
+  }
+
+
+/* Next Button */
+.label-text-container-1 {
+  position: fixed;
+  bottom: 130px;
+  right: 105px;
+  display: table;
+  visibility: hidden;
+}
+
+a.floater-1 + div.label-text-container-1 {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.floater-1:hover + div.label-text-container-1 {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+/* Next Button */
+.label-text-container-2 {
+  position: fixed;
+  bottom: 200px;
+  right: 105px;
+  display: table;
+  visibility: hidden;
+}
+
+a.floater-2 + div.label-text-container-2 {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.floater-2:hover + div.label-text-container-2 {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+/* Next Button */
+.label-text-container-3 {
+  position: fixed;
+  bottom: 270px;
+  right: 105px;
+  display: table;
+  visibility: hidden;
+}
+
+a.floater-3 + div.label-text-container-3 {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.floater-3:hover + div.label-text-container-3 {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+/* Next Button */
+.label-text-container-4 {
+  position: fixed;
+  bottom: 340px;
+  right: 105px;
+  display: table;
+  visibility: hidden;
+}
+
+a.floater-4 + div.label-text-container-4 {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.floater-4:hover + div.label-text-container-4 {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+/* Next Button */
+.label-text-container-5 {
+  position: fixed;
+  bottom: 410px;
+  right: 105px;
+  display: table;
+  visibility: hidden;
+}
+
+a.floater-5 + div.label-text-container-5 {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.floater-5:hover + div.label-text-container-5 {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+/* Next Button */
+.label-text-container-6 {
+  position: fixed;
+  bottom: 480px;
+  right: 105px;
+  display: table;
+  visibility: hidden;
+}
+
+a.floater-6 + div.label-text-container-6 {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.floater-6:hover + div.label-text-container-6 {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+/* Next Button */
+.label-text-container-7 {
+    position: fixed;
+    bottom: 550px;
+    right: 105px;
+    display: table;
+    visibility: hidden;
+  }
+  
+  a.floater-7 + div.label-text-container-7 {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease;
+  }
+  
+  a.floater-7:hover + div.label-text-container-7 {
+    visibility: visible;
+    opacity: 1;
+  }

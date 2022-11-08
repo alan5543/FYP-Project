@@ -4,11 +4,16 @@ import nltk
 from .emotionModel import get_emotion_predict_res
 from .map import getCountry
 
+# load the environment
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 # Authentication
-consumerKey = "4o6WpHCCeFumMzjb2rARmT1TI"
-consumerSecret = "q3XhXPswB2ScdYIpHcrBbiUpo0XeAd7RYta7Phdb42Ha8hgpiO"
-accessToken = "1480183163078922240-rnuVv8wZxQmbFFjkhySn56viG1gQgX"
-accessTokenSecret = "mCtI5zqxmzPEa7KRKtUJclHuhlwPx2NwiDWfqpgatG0iM"
+consumerKey = os.getenv("CONSUMER_KEY")
+consumerSecret = os.getenv("CONSUMER_SECRET")
+accessToken = os.getenv("ACCESS_TOKEN")
+accessTokenSecret = os.getenv("ACCESS_TOKEN_SECRET")
 
 
 def connect_twitter():

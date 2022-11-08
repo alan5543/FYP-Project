@@ -198,6 +198,7 @@ def get_emotion():
         }
 
 
+
 @apiService.route('/api/get_name_entity', methods=["GET", "POST"])
 def get_name_entity():
     try:
