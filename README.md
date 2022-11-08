@@ -11,5 +11,6 @@ The frontend and backend server is communicated through RESTful API. Once the cl
 To conclude, NewsPoint is the application for the public to utilize the text mining tools to simplify or deep-understand the content of newspaper articles, to cultivate the customized reading strategy.
 
 ## Demonstration
-Poster: https://alan5543.github.io/alan-yang-profilio-app/static/media/news_platform_document.eb68aba04da14c210383.pdf
-YouTube: https://youtu.be/wFBS9rF1FWI
+### Poster: https://alan5543.github.io/alan-yang-profilio-app/static/media/news_platform_document.eb68aba04da14c210383.pdf
+
+### YouTube: https://youtu.be/wFBS9rF1FWI
